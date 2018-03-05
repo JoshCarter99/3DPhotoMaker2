@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="app_name">3DPhotoMaker2</string>
+    <string name="picture">Picture</string>
+    <string name="description_info">Info</string>
+    <string name="request_permission">This sample needs camera permission.</string>
+    <string name="camera_error">This device doesn\'t support Camera2 API.</string>
+    <string name="back_button">Back</string>
+    <string name="save">Save!</string>
+    <string name="restart">Restart</string>
+
+    <string name="info_message">
+        <![CDATA[
+
+
+            Write instructions on how to use app.
+
+
+        ]]>
+    </string>
+</resources>
+
+

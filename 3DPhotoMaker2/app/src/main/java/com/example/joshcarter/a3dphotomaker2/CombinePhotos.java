@@ -2,7 +2,6 @@ package com.example.joshcarter.a3dphotomaker2;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -10,13 +9,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.LruCache;
 import android.view.View;
 import android.widget.ImageView;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -26,7 +25,7 @@ import java.util.Locale;
 
 import static java.lang.Math.round;
 
-/**
+/*
  * Created by JoshCarter on 21/02/2018.
  */
 
@@ -39,15 +38,14 @@ public class CombinePhotos extends AppCompatActivity{
     public double picWidth, picHeight, picRatio;
     LruCache<String, Bitmap> mMemoryCache;
     BitmapWorkerTask BitmapWorker;
-    public byte[] bytesL, bytesR;
 
     public int newPicHeight, newPicWidth, currentOrientation;
 
     static int orientation;
 
-    String photoKey = "photoBitmap";
-
-    public File mFileL, mFileR;
+    String photoKey = "photoKey";
+    String photoKeyLeft = "photoLeft";
+    String photoLeyRight = "photoRight";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +53,8 @@ public class CombinePhotos extends AppCompatActivity{
         setContentView(R.layout.activity_combine);
 
         currentOrientation = this.getResources().getConfiguration().orientation;
-        Log.d("currentOrientation",Integer.toString(currentOrientation));
 
-        comPic = (ImageView) findViewById(R.id.anaglyph);
+        comPic = findViewById(R.id.anaglyph);
 
         /////////
         RetainFragment retainFragment =
@@ -66,11 +63,8 @@ public class CombinePhotos extends AppCompatActivity{
 
 
         if (mMemoryCache != null) {
-            Log.d("Hello","hello");
-            picLR=mMemoryCache.get(photoKey);
-            //picLR = BitmapWorker.getAnswerFromMemoryCache(photoKey);
-            Log.d("mMemoryCache2",picLR.toString());
 
+            picLR = BitmapWorker.getAnswerFromMemoryCache(photoKey);
             comPic.setImageBitmap(picLR);
         } else{
 
@@ -88,33 +82,60 @@ public class CombinePhotos extends AppCompatActivity{
                     return bitmap.getByteCount() / 1024;
                 }
             };
+
             retainFragment.mRetainedCache = mMemoryCache;
 
-            Log.d("Hello", "Bonjour");
             Intent intent = getIntent();
 
-            //picL = intent.getParcelableExtra("photoLeft");
-            //picR = intent.getParcelableExtra("photoRight");
-
-            //bytesL = intent.getByteArrayExtra("photoLeft");
-            //bytesR = intent.getByteArrayExtra("photoRight");
-
-            fileLeft = intent.getParcelableExtra("photoLeft");
-            //Log.d("Hello", fileLeft.toString());
-            fileRight = intent.getParcelableExtra("photoRight");
-
-
-            //picL = BitmapFactory.decodeByteArray(bytesL, 0, bytesL.length, null);
-            //picR = BitmapFactory.decodeByteArray(bytesR, 0, bytesR.length, null);
-
+            fileLeft = intent.getParcelableExtra(photoKeyLeft);
+            fileRight = intent.getParcelableExtra(photoLeyRight);
 
             try {
                 picL = MediaStore.Images.Media.getBitmap(this.getContentResolver(), fileLeft);
-                Log.d("Hello", "Bonjour2");
                 picR = MediaStore.Images.Media.getBitmap(this.getContentResolver(), fileRight);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            picHeight = picL.getHeight();
+            picWidth = picL.getWidth();
+
+            /// maybe move this above rotation???
+            if(picHeight>1920||picWidth>1920){
+                if(picHeight>=picWidth) {
+                    picRatio = picWidth / picHeight;
+                    newPicHeight = 1920;
+                    newPicWidth = (int)round(newPicHeight*picRatio);
+                }else{
+                    picRatio = picHeight / picWidth;
+                    newPicWidth = 1920;
+                    newPicHeight = (int)round(newPicWidth*picRatio);
+                }
+                picL = Bitmap.createScaledBitmap(picL,newPicWidth, newPicHeight, true);
+                picR = Bitmap.createScaledBitmap(picR,newPicWidth, newPicHeight, true);
+            }
+
+
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            double height = displayMetrics.heightPixels;
+            double width = displayMetrics.widthPixels;
+
+            if((picL.getHeight()*width!=picL.getWidth()*height)||(picL.getHeight()*height!=picL.getWidth()*width)){
+                if(height>width){
+                    double ratio = width/height;
+                    int newHeight = (int) round(picL.getWidth()*ratio);
+                    picL=Bitmap.createBitmap(picL, 0,picL.getHeight()-newHeight,picL.getWidth(), newHeight);
+                    picR=Bitmap.createBitmap(picR, 0,picR.getHeight()-newHeight,picR.getWidth(), newHeight);
+                }else{
+                    double ratio = height/width;
+                    int newHeight = (int) round(picL.getWidth()*ratio);
+                    int startPoint = (int) round(((double)(picL.getHeight()-newHeight))/2);
+                    picL=Bitmap.createBitmap(picL, 0,startPoint,picL.getWidth(), newHeight);
+                    picR=Bitmap.createBitmap(picR, 0,startPoint,picR.getWidth(), newHeight);
+                }
+            }
+
 
             try {
                 ExifInterface exif = new ExifInterface(fileLeft.getPath());
@@ -134,52 +155,13 @@ public class CombinePhotos extends AppCompatActivity{
             } catch (Exception e) {
             }
 
-
-
-
-
-            picHeight = picL.getHeight();
-            Log.d("Height",Double.toString(picHeight));
-            picWidth = picL.getWidth();
-            Log.d("Width",Double.toString(picWidth));
-
-            /// maybe move this above rotation???
-            if(picHeight>1920||picWidth>1920){
-                if(picHeight>=picWidth) {
-                    picRatio = picWidth / picHeight;
-                    newPicHeight = 1920;
-                    newPicWidth = (int)round(newPicHeight*picRatio);
-                }else{
-                    picRatio = picHeight / picWidth;
-                    newPicWidth = 1920;
-                    newPicHeight = (int)round(newPicWidth*picRatio);
-                }
-                picL = Bitmap.createScaledBitmap(picL,newPicWidth, newPicHeight, true);
-                picR = Bitmap.createScaledBitmap(picR,newPicWidth, newPicHeight, true);
-            }
-
-            Log.d("timeStarts","timer2");
-
             picLR = combinePhotos(picL, picR);
-            Log.d("picLR1",picLR.toString());
 
             Log.d("timeStarts","timer3");
-
-            Log.d("hello2","hey");
-
-
-
         }
-        /////////
 
 
-
-
-        Log.d("hello","hey");
         comPic.setImageBitmap(picLR);
-
-        Log.d("orientation",Integer.toString(orientation));
-        Log.d("currentOrientation",Integer.toString(currentOrientation));
 
         if ((orientation==6 && currentOrientation ==1) || (orientation == 1 && currentOrientation == 2)){
             comPic.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -192,9 +174,6 @@ public class CombinePhotos extends AppCompatActivity{
         BitmapWorker.addMMemoryCache(mMemoryCache);
 
         BitmapWorker.addAnswerToMemoryCache(photoKey,picLR);
-        Log.d("hello1","hey");
-
-
 
     }
 
@@ -205,10 +184,6 @@ public class CombinePhotos extends AppCompatActivity{
         picLC = picL.copy(picL.getConfig(),true);
         picRC = picR.copy(picR.getConfig(),true);
 
-        Log.d("getPixelsLWidth",Integer.toString(picL.getWidth()));
-        Log.d("getPixelsLHeight",Integer.toString(picL.getHeight()));
-        Log.d("getPixelsRWidth",Integer.toString(picR.getWidth()));
-        Log.d("getPixelsRHeight",Integer.toString(picR.getHeight()));
         for (int i=0; i<picL.getHeight();i++){
             picL.getPixels(pixelColorL,0,picL.getWidth(),0,i,picL.getWidth(),1);
 
@@ -225,8 +200,6 @@ public class CombinePhotos extends AppCompatActivity{
 
     public void backButton(View view){
 
-        Log.d("Hello", "bonjourno");
-        //Log.e("3DPhotoMaker2", fileLeft.toString());
         Intent backIntent = new Intent(CombinePhotos.this, CameraActivity.class);
         startActivity(backIntent);
     }
@@ -239,17 +212,9 @@ public class CombinePhotos extends AppCompatActivity{
             picLR.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
             fOut.flush();
             fOut.close();
-            //MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        // I dont know what this does...
-        /*Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        Uri uri = Uri.fromFile(file);
-        mediaScanIntent.setData(uri);
-        this.sendBroadcast(mediaScanIntent);*/
 
     }
 

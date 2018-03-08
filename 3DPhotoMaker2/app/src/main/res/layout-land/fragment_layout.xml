@@ -67,7 +67,7 @@
 
     </FrameLayout>
 
-    <Button
+   <!-- <Button
         android:id="@+id/restart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -76,6 +76,6 @@
         android:layout_marginStart="41dp"
         android:layout_marginTop="57dp"
         android:text="@string/restart"
-        android:onClick="RestartButton"/>
+        android:onClick="RestartButton"/> -->
 
 </RelativeLayout>

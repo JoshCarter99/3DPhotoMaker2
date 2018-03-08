@@ -42,6 +42,9 @@ public class BitmapWorkerTask extends AsyncTask<Long, Integer, Long> {
     }*/
 
     protected Long doInBackground(Long... params) {
+
+        // Sounds like I should be combining the photo here using: execute.
+
         long result = 0;
         /*for (long i = 0; i < params[0]; i++) {
             for (long j = 0; j < 100000; j++) {

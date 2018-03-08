@@ -2,7 +2,6 @@ package com.example.joshcarter.a3dphotomaker2;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
@@ -24,8 +23,6 @@ public class CameraActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
 
-        //Log.d("currentOrientation",Integer.toString(this.getResources().getConfiguration().orientation));
-
         checkPermissions();
 
         // Not sure if I need this... was used to disable button
@@ -37,9 +34,7 @@ public class CameraActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, CameraFragment.newInstance())
                     .commit();
-            Log.d("Tester", "2");
         }
-        Log.d("Tester", "1");
 
 
 

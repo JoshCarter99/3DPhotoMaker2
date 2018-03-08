@@ -13,7 +13,6 @@ import android.util.LruCache;
 public class RetainFragment extends Fragment {
     private static final String TAG = "RetainFragment";
     public LruCache<String, Bitmap> mRetainedCache;
-    public int i;
 
     public RetainFragment() {}
 

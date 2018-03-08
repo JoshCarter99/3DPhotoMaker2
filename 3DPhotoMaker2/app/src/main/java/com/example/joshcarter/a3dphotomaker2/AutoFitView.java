@@ -49,34 +49,6 @@ public class AutoFitView extends TextureView {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
-        int i=0;
-        //Log.d("WidthMeasureSpecwidth",Integer.toString(width));
-        //Log.d("HeightMeasureSpecheight",Integer.toString(height));
-        //Log.d("WidthRatio",Integer.toString(mRatioWidth));
-        //Log.d("HeightRatio",Integer.toString(mRatioHeight));
-
-
-        /*
-        if (0 == mRatioWidth || 0 == mRatioHeight) {
-            setMeasuredDimension(width, height);
-        } else {
-            Log.d("mRatioWidth",Integer.toString(mRatioWidth));
-            Log.d("mRatioHeight",Integer.toString(mRatioHeight));
-            Log.d("ratioWidth",Integer.toString(width));
-            Log.d("ratioHeight",Integer.toString(height));
-            if (width < height * mRatioWidth / mRatioHeight) {
-                //setMeasuredDimension(width, width * mRatioHeight / mRatioWidth);
-                Log.d("newWidth1",Integer.toString(height * mRatioWidth / mRatioHeight));
-                Log.d("newHeight1",Integer.toString(height));
-                setMeasuredDimension(height * mRatioWidth /( mRatioHeight), height);
-            } else {
-                Log.d("newWidth2",Integer.toString(width));
-                Log.d("newHeight2",Integer.toString(width * mRatioHeight / mRatioWidth));
-                //setMeasuredDimension(height * mRatioWidth / mRatioHeight, height);
-                //setMeasuredDimension(width, width * mRatioHeight / mRatioWidth);
-                setMeasuredDimension(width, height);
-            }
-        } */
 
         if (0 == mRatioWidth || 0 == mRatioHeight) {
             setMeasuredDimension(width, height);

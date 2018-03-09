@@ -64,7 +64,8 @@ public class CombinePhotos extends AppCompatActivity{
 
         if (mMemoryCache != null) {
 
-            picLR = BitmapWorker.getAnswerFromMemoryCache(photoKey);
+            picLR = mMemoryCache.get(photoKey);
+            //picLR = BitmapWorker.getAnswerFromMemoryCache(photoKey);
             comPic.setImageBitmap(picLR);
         } else{
 

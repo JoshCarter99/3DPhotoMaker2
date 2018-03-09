@@ -44,6 +44,7 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.io.File;
@@ -62,6 +63,7 @@ import java.util.Objects;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
+import static java.lang.Math.PI;
 import static java.lang.Math.round;
 
 /*
@@ -75,6 +77,8 @@ public class CameraFragment extends Fragment
     private static final int REQUEST_CAMERA_PERMISSION = 1;
     private static final String FRAGMENT_DIALOG = "dialog";
     private int PIC_COUNTER = 0;
+
+    public Button button;
 
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
@@ -190,6 +194,7 @@ public class CameraFragment extends Fragment
 
             // Jon is awesome
 
+            Log.d("hello","hello");
             if(PIC_COUNTER==0) {
                 // Saving image to mFileL?
                 mBackgroundHandler.post(new ImageSaver(reader.acquireNextImage(), mFileL));
@@ -198,8 +203,6 @@ public class CameraFragment extends Fragment
                 mBackgroundHandler.post(new ImageSaver(reader.acquireNextImage(), mFileR));
             }
         }
-
-
     };
 
     //{@link CaptureRequest.Builder} for the camera preview
@@ -350,7 +353,8 @@ public class CameraFragment extends Fragment
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
-        view.findViewById(R.id.picture).setOnClickListener(this);
+        button = view.findViewById(R.id.photo);
+        view.findViewById(R.id.photo).setOnClickListener(this);
         view.findViewById(R.id.info).setOnClickListener(this);
         mTextureView = view.findViewById(R.id.texture);
     }
@@ -358,7 +362,6 @@ public class CameraFragment extends Fragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         mFileL = getOutputMediaFile("Left");
         mFileR = getOutputMediaFile("Right");
     }
@@ -370,7 +373,7 @@ public class CameraFragment extends Fragment
 
         if (!mediaStorageDir.exists()){
             if (!mediaStorageDir.mkdirs()){
-                //Log.d("3DPhotoMaker2", "failed to create directory");
+                Log.d("3DPhotoMaker2", "failed to create directory");
                 return null;
             }
         }
@@ -444,6 +447,7 @@ public class CameraFragment extends Fragment
     //Sets up member variables related to camera.
     @SuppressWarnings("SuspiciousNameCombination")
     private void setUpCameraOutputs(int width, int height) {
+        Log.d("test","10");
         Activity activity = getActivity();
         CameraManager manager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
         try {
@@ -471,6 +475,7 @@ public class CameraFragment extends Fragment
                         new CompareSizesByArea());
                 mImageReader = ImageReader.newInstance(largest.getWidth(), largest.getHeight(),
                         ImageFormat.JPEG, /*maxImages*/2);
+                Log.d("test","9");
                 mImageReader.setOnImageAvailableListener(
                         mOnImageAvailableListener, mBackgroundHandler);
 
@@ -555,6 +560,7 @@ public class CameraFragment extends Fragment
             ErrorDialog.newInstance(getString(R.string.camera_error))
                     .show(getChildFragmentManager(), FRAGMENT_DIALOG);
         }
+        Log.d("test","11");
     }
 
     //Opens the camera specified by {@link Camera2BasicFragment#mCameraId}.
@@ -570,7 +576,9 @@ public class CameraFragment extends Fragment
         CameraManager manager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
         try {
             if (!mCameraOpenCloseLock.tryAcquire(2500, TimeUnit.MILLISECONDS)) {
-                throw new RuntimeException("Time out waiting to lock camera opening.");
+                //throw new RuntimeException("Time out waiting to lock camera opening.");
+                Log.d("recreate","recreate");
+                getActivity().recreate();
             }
             assert manager != null;
             manager.openCamera(mCameraId, mStateCallback, mBackgroundHandler);
@@ -579,6 +587,7 @@ public class CameraFragment extends Fragment
         } catch (InterruptedException e) {
             throw new RuntimeException("Interrupted while trying to lock camera opening.", e);
         }
+        Log.d("test","1");
     }
 
     //Closes the current {@link CameraDevice}.
@@ -642,6 +651,7 @@ public class CameraFragment extends Fragment
 
             mPreviewRequestBuilder.addTarget(surface);
 
+            Log.d("test","2");
             // Here, we create a CameraCaptureSession for camera preview.
             mCameraDevice.createCaptureSession(Arrays.asList(surface, mImageReader.getSurface()),
                     new CameraCaptureSession.StateCallback() {
@@ -711,12 +721,14 @@ public class CameraFragment extends Fragment
         } else if (Surface.ROTATION_180 == rotation) {
             matrix.postRotate(180, centerX, centerY);
         }
+        Log.d("test","3");
 
         mTextureView.setTransform(matrix);
     }
 
     //Initiate a still image capture.
     private void takePicture() {
+        Log.d("test","4");
         lockFocus();
     }
 
@@ -754,6 +766,7 @@ public class CameraFragment extends Fragment
     //Capture a still picture. This method should be called when we get a response in
     //{@link #mCaptureCallback} from both {@link #lockFocus()}.
     private void captureStillPicture() {
+        Log.d("test","5");
         try {
             final Activity activity = getActivity();
             if (null == activity || null == mCameraDevice) {
@@ -787,20 +800,33 @@ public class CameraFragment extends Fragment
                     unlockFocus();
                     PIC_COUNTER++;
 
-                    if(PIC_COUNTER==2){
+                    /*if(PIC_COUNTER==2){
                         PIC_COUNTER=0;
                         SendImages();
-                    }
+                    }*/
                 }
             };
 
-            mCaptureSession.stopRepeating();
-            mCaptureSession.abortCaptures();
-            mCaptureSession.capture(captureBuilder.build(), CaptureCallback, null);
+            try {
+                mCaptureSession.stopRepeating();
+                mCaptureSession.abortCaptures();
+                if(PIC_COUNTER==2){
+                    PIC_COUNTER=0;
+                    SendImages();
+                }else {
+                    mCaptureSession.capture(captureBuilder.build(), CaptureCallback, null);
+                }
+            }catch (CameraAccessException e) {
+                e.printStackTrace();
+            }
+
+
+
 
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
+        Log.d("test","6");
     }
 
     //Retrieves the JPEG orientation from the specified screen rotation.
@@ -835,8 +861,13 @@ public class CameraFragment extends Fragment
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.picture: {
+            case R.id.photo: {
+                Log.d("test","7");
                 takePicture();
+                if(PIC_COUNTER==0){
+                    button.setText(R.string.right_pic);
+                }
+                Log.d("test","8");
                 break;
             }
             case R.id.info: {

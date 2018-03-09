@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ public class CameraActivity extends AppCompatActivity {
 
     static final int PhotoPermission_Request_Code = 0;
     public static final int MY_PERMISSIONS_REQUEST_ACCESS_CODE = 1;
+    public Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

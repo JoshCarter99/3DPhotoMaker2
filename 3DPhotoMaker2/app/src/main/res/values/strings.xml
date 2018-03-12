@@ -10,6 +10,10 @@
     <string name="back_button">Back</string>
     <string name="save">Save!</string>
     <string name="restart">Restart</string>
+    <string name="flash">flash</string>
+    <string name="square">square</string>
+    <string name="left_toast">Left Photo Captured</string>
+    <string name="right_toast">Combining!</string>
 
     <string name="info_message">
         <![CDATA[

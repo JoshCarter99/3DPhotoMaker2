@@ -45,6 +45,8 @@ import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -77,8 +79,12 @@ public class CameraFragment extends Fragment
     private static final int REQUEST_CAMERA_PERMISSION = 1;
     private static final String FRAGMENT_DIALOG = "dialog";
     private int PIC_COUNTER = 0;
+    private int FLASH_COUNTER;
+    private int SQUARE_COUNTER;
 
-    public Button button;
+    public Button photoButton;
+    public ImageButton FlashButton, SquareButton;
+    public ImageView BigSquare;
 
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
@@ -141,6 +147,8 @@ public class CameraFragment extends Fragment
     private CameraDevice mCameraDevice;
     //The {@link android.util.Size} of camera preview.
     private Size mPreviewSize;
+
+
 
     //{@link CameraDevice.StateCallback} is called when {@link CameraDevice} changes its state.
     private final CameraDevice.StateCallback mStateCallback = new CameraDevice.StateCallback() {
@@ -353,9 +361,14 @@ public class CameraFragment extends Fragment
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
-        button = view.findViewById(R.id.photo);
+        photoButton = view.findViewById(R.id.photo);
+        FlashButton = view.findViewById(R.id.flashButton);
+        SquareButton = view.findViewById(R.id.squareButton);
+        BigSquare = view.findViewById(R.id.bigSquare);
         view.findViewById(R.id.photo).setOnClickListener(this);
         view.findViewById(R.id.info).setOnClickListener(this);
+        view.findViewById(R.id.flashButton).setOnClickListener(this);
+        view.findViewById(R.id.squareButton).setOnClickListener(this);
         mTextureView = view.findViewById(R.id.texture);
     }
 
@@ -364,6 +377,38 @@ public class CameraFragment extends Fragment
         super.onActivityCreated(savedInstanceState);
         mFileL = getOutputMediaFile("Left");
         mFileR = getOutputMediaFile("Right");
+
+        if (savedInstanceState != null) {
+            FLASH_COUNTER = savedInstanceState.getInt("FlashCounter");
+            if(FLASH_COUNTER==1){
+                FlashButton.setBackgroundResource(R.drawable.not_flash);
+            }else if(FLASH_COUNTER==2){
+                FlashButton.setBackgroundResource(R.drawable.flash2);
+            }else{
+                FlashButton.setBackgroundResource(R.drawable.auto_flash);
+            }
+
+            SQUARE_COUNTER = savedInstanceState.getInt("SquareCounter");
+            if(SQUARE_COUNTER==1){
+                SquareButton.setBackgroundResource(R.drawable.square);
+                BigSquare.setVisibility(View.INVISIBLE);
+            }else{
+                SquareButton.setBackgroundResource(R.drawable.square_tick);
+                BigSquare.setVisibility(View.VISIBLE);
+            }
+
+        } else {
+            Log.d("SavedInstanceState","null");
+            FLASH_COUNTER = 1;
+            SQUARE_COUNTER = 1;
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(final Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("FlashCounter", FLASH_COUNTER);
+        outState.putInt("SquareCounter", SQUARE_COUNTER);
     }
 
 
@@ -412,15 +457,18 @@ public class CameraFragment extends Fragment
         closeCamera();
         stopBackgroundThread();
         super.onPause();
+        Log.d("Pause","1");
     }
 
     @Override
     public void onStop(){
         super.onStop();
+        Log.d("Stop","1");
     }
 
     public void onDestroy(){
         super.onDestroy();
+        Log.d("Destroy","1");
     }
 
     private void requestCameraPermission() {
@@ -796,26 +844,37 @@ public class CameraFragment extends Fragment
                 public void onCaptureCompleted(@NonNull CameraCaptureSession session,
                                                @NonNull CaptureRequest request,
                                                @NonNull TotalCaptureResult result) {
-                    showToast("Saved!");
+                    //showToast("Saved!");
+                    Log.d("PicCounterAtSave",Integer.toString(PIC_COUNTER));
+                    if (PIC_COUNTER == 0) {
+                        showToast(getString(R.string.left_toast));
+                    } else if (PIC_COUNTER==1){
+                        showToast(getString(R.string.right_toast));
+                    }else{
+                        showToast("Saved!");
+                    }
+
+
+
                     unlockFocus();
                     PIC_COUNTER++;
 
-                    /*if(PIC_COUNTER==2){
+                    if(PIC_COUNTER==2){
                         PIC_COUNTER=0;
                         SendImages();
-                    }*/
+                    }
                 }
             };
 
             try {
                 mCaptureSession.stopRepeating();
                 mCaptureSession.abortCaptures();
-                if(PIC_COUNTER==2){
-                    PIC_COUNTER=0;
-                    SendImages();
-                }else {
+                //if(PIC_COUNTER==1){
+                    //Log.d("SendIMages","Sending...");
+                //}else {
+                    //Log.d("NotSendIMages","NotSending...");
                     mCaptureSession.capture(captureBuilder.build(), CaptureCallback, null);
-                }
+                //}
             }catch (CameraAccessException e) {
                 e.printStackTrace();
             }
@@ -865,7 +924,7 @@ public class CameraFragment extends Fragment
                 Log.d("test","7");
                 takePicture();
                 if(PIC_COUNTER==0){
-                    button.setText(R.string.right_pic);
+                    photoButton.setText(R.string.right_pic);
                 }
                 Log.d("test","8");
                 break;
@@ -880,8 +939,33 @@ public class CameraFragment extends Fragment
                 }
                 break;
             }
-
-
+            case R.id.flashButton: {
+                Log.d("flashButton","hello");
+                if(FLASH_COUNTER==1){
+                    FLASH_COUNTER++;
+                    FlashButton.setBackgroundResource(R.drawable.flash2);
+                }else if(FLASH_COUNTER==2){
+                    FLASH_COUNTER++;
+                    FlashButton.setBackgroundResource(R.drawable.auto_flash);
+                }else{
+                    FLASH_COUNTER=1;
+                    FlashButton.setBackgroundResource(R.drawable.not_flash);
+                }
+                break;
+            }
+            case R.id.squareButton: {
+                Log.d("squareButton","hello");
+                if(SQUARE_COUNTER==1){
+                    SQUARE_COUNTER++;
+                    SquareButton.setBackgroundResource(R.drawable.square_tick);
+                    BigSquare.setVisibility(View.VISIBLE);
+                }else{
+                    SQUARE_COUNTER=1;
+                    SquareButton.setBackgroundResource(R.drawable.square);
+                    BigSquare.setVisibility(View.INVISIBLE);
+                }
+                break;
+            }
              ///   getActivity().recreate();
 
         }
@@ -889,10 +973,19 @@ public class CameraFragment extends Fragment
     }
 
     private void setAutoFlash(CaptureRequest.Builder requestBuilder) {
-        /*if (mFlashSupported) {
-            requestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
-                    CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
-        } */
+        Log.d("InSetAutoFlash",Integer.toString(FLASH_COUNTER));
+        if (mFlashSupported) {
+            if (FLASH_COUNTER==1){
+                requestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
+                        CaptureRequest.CONTROL_AE_MODE_OFF);
+            }else if (FLASH_COUNTER==2) {
+                requestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
+                        CaptureRequest.CONTROL_AE_MODE_ON_ALWAYS_FLASH);
+            }else if(FLASH_COUNTER==3){
+                requestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
+                        CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
+            }
+        }
     }
 
     //Saves a JPEG {@link Image} into the specified {@link File}.

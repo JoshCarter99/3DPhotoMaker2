@@ -18,7 +18,6 @@ public class CameraActivity extends AppCompatActivity {
 
     static final int PhotoPermission_Request_Code = 0;
     public static final int MY_PERMISSIONS_REQUEST_ACCESS_CODE = 1;
-    public Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +36,7 @@ public class CameraActivity extends AppCompatActivity {
                     .replace(R.id.container, CameraFragment.newInstance())
                     .commit();
         }
-
-
-
     }
-
 
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -63,6 +58,8 @@ public class CameraActivity extends AppCompatActivity {
                     MY_PERMISSIONS_REQUEST_ACCESS_CODE);
         }
     }
+
+
 
 
 }

@@ -1,5 +1,6 @@
 package com.example.joshcarter.a3dphotomaker2;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.util.LruCache;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -213,10 +215,11 @@ public class CombinePhotos extends AppCompatActivity{
             picLR.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
             fOut.flush();
             fOut.close();
+            showToast("Saved!");
         } catch (Exception e) {
             e.printStackTrace();
+            showToast("Not Saved");
         }
-
     }
 
     private static File getOutputMediaFile(){
@@ -232,6 +235,15 @@ public class CombinePhotos extends AppCompatActivity{
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(new Date());
         return new File(mediaStorageDir.getPath() + File.separator + "IMG_"+ timeStamp + ".jpg");
+    }
+
+    private void showToast(final String text) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+                }
+            });
     }
 
 }

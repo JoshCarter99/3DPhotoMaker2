@@ -3,6 +3,7 @@
 
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -40,16 +41,53 @@
             android:src="@drawable/ic_action_info" />
 
     </FrameLayout>
-<!--
-    <Button
-        android:id="@+id/restart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
+
+    <ImageButton
+        android:id="@+id/flashButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="41dp"
-        android:layout_marginTop="57dp"
-        android:text="@string/restart"
-        android:onClick="RestartButton"/>-->
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/not_flash"
+        android:contentDescription="@string/flash"
+        android:scaleType="fitCenter" />
+
+    <ImageButton
+        android:id="@+id/squareButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="95dp"
+        android:background="@drawable/square"
+        android:contentDescription="@string/square"
+        android:scaleType="fitCenter" />
+
+    <ImageView
+        android:id="@+id/bigSquare"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/big_square" />
+
+    <!--
+        <Button
+
+        app:srcCompat="@drawable/flash2"
+
+            android:id="@+id/restart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="41dp"
+            android:layout_marginTop="57dp"
+            android:text="@string/restart"
+            android:onClick="RestartButton"/>-->
 
 </RelativeLayout>

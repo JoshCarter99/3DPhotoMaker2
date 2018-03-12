@@ -2,7 +2,8 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.example.joshcarter.a3dphotomaker2.AutoFitView
         android:id="@+id/texture"
@@ -66,6 +67,30 @@
             android:src="@drawable/ic_action_info" />
 
     </FrameLayout>
+
+    <ImageButton
+        android:id="@+id/flashButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/not_flash"
+        android:contentDescription="@string/flash"
+        android:scaleType="fitCenter" />
+
+    <ImageButton
+        android:id="@+id/squareButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="95dp"
+        android:background="@drawable/square"
+        android:contentDescription="@string/square"
+        android:scaleType="fitCenter" />
 
    <!-- <Button
         android:id="@+id/restart"

@@ -2,6 +2,8 @@ package com.example.joshcarter.a3dphotomaker2;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
@@ -14,6 +16,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.LruCache;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -33,30 +36,46 @@ import static java.lang.Math.round;
 
 public class CombinePhotos extends AppCompatActivity{
 
-    public Bitmap picL,picLC, picR,picRC,picLR;
+    public Bitmap picL,picLC, picR,picRC,picLR, alignedPic;
     public Uri fileLeft, fileRight;
     public ImageView comPic;
     public File file;
     public double picWidth, picHeight, picRatio;
     LruCache<String, Bitmap> mMemoryCache;
     BitmapWorkerTask BitmapWorker;
+    public ImageButton AutoAlignButton;
 
-    public int newPicHeight, newPicWidth, currentOrientation;
+    public int newPicHeight, newPicWidth;
 
     static int orientation;
 
     String photoKey = "photoKey";
     String photoKeyLeft = "photoLeft";
     String photoLeyRight = "photoRight";
+    String photoKeyAligned = "photoKeyAligned";
+
+    public int ALIGN_COUNTER=0;
+    public int OrientationOnRightPic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_combine);
 
-        currentOrientation = this.getResources().getConfiguration().orientation;
+        // Locking orientation
+        /*int currentOrientation = getResources().getConfiguration().orientation;
+        if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+        }
+        else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+        }*/
+        //
+
+        //currentOrientation = this.getResources().getConfiguration().orientation;
 
         comPic = findViewById(R.id.anaglyph);
+        AutoAlignButton = findViewById(R.id.autoAlignButton);
 
         /////////
         RetainFragment retainFragment =
@@ -65,10 +84,26 @@ public class CombinePhotos extends AppCompatActivity{
 
 
         if (mMemoryCache != null) {
+            if(savedInstanceState!=null){
+                ALIGN_COUNTER = savedInstanceState.getInt("AlignCounter");
+                OrientationOnRightPic = savedInstanceState.getInt("Orientation");
+            }
 
-            picLR = mMemoryCache.get(photoKey);
+            if (OrientationOnRightPic == Configuration.ORIENTATION_LANDSCAPE) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+            }
+            else {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+            }
+
+            if (ALIGN_COUNTER==0) {
+                picLR = mMemoryCache.get(photoKey);
+            }else{
+                picLR = mMemoryCache.get(photoKeyAligned);
+            }
             //picLR = BitmapWorker.getAnswerFromMemoryCache(photoKey);
             comPic.setImageBitmap(picLR);
+            picLR = null;
         } else{
 
             //initialCurrentOrientation = this.getResources().getConfiguration().orientation;
@@ -92,6 +127,14 @@ public class CombinePhotos extends AppCompatActivity{
 
             fileLeft = intent.getParcelableExtra(photoKeyLeft);
             fileRight = intent.getParcelableExtra(photoLeyRight);
+            OrientationOnRightPic = intent.getIntExtra("Orientation",0);
+
+            if (OrientationOnRightPic == Configuration.ORIENTATION_LANDSCAPE) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+            }
+            else {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+            }
 
             try {
                 picL = MediaStore.Images.Media.getBitmap(this.getContentResolver(), fileLeft);
@@ -158,7 +201,7 @@ public class CombinePhotos extends AppCompatActivity{
             } catch (Exception e) {
             }
 
-            picLR = combinePhotos(picL, picR);
+            picLR = AutoAlign.combinePhotos(picL, picR,0);
 
             Log.d("timeStarts","timer3");
         }
@@ -166,10 +209,20 @@ public class CombinePhotos extends AppCompatActivity{
 
         comPic.setImageBitmap(picLR);
 
-        if ((orientation==6 && currentOrientation ==1) || (orientation == 1 && currentOrientation == 2)){
+
+        /*if ((orientation==6 && currentOrientation2 ==1) || (orientation == 1 && currentOrientation2 == 2)){
             comPic.setScaleType(ImageView.ScaleType.CENTER_CROP);
         } else {
             comPic.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        }*/
+
+        //int currentOrientation = getResources().getConfiguration().orientation;
+        Log.d(Integer.toString(orientation),Integer.toString(Configuration.ORIENTATION_LANDSCAPE));
+        Log.d(Integer.toString(orientation),Integer.toString(Configuration.ORIENTATION_PORTRAIT));
+        if (orientation == 1) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+        } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
         }
 
         BitmapWorker = (BitmapWorkerTask) new BitmapWorkerTask().execute(10l);
@@ -177,29 +230,17 @@ public class CombinePhotos extends AppCompatActivity{
         BitmapWorker.addMMemoryCache(mMemoryCache);
 
         BitmapWorker.addAnswerToMemoryCache(photoKey,picLR);
+        picLR = null;
 
     }
 
-    public Bitmap combinePhotos(Bitmap picL, Bitmap picR){
-
-        int[] pixelColorL= new int[picL.getWidth()];
-        int[] pixelColorR= new int[picR.getWidth()];
-        picLC = picL.copy(picL.getConfig(),true);
-        picRC = picR.copy(picR.getConfig(),true);
-
-        for (int i=0; i<picL.getHeight();i++){
-            picL.getPixels(pixelColorL,0,picL.getWidth(),0,i,picL.getWidth(),1);
-
-            picR.getPixels(pixelColorR,0,picR.getWidth(),0,i,picR.getWidth(),1);
-
-            for (int j=0; j<picL.getWidth();j++){
-                pixelColorL[j] = pixelColorL[j] & 0xFFFF0000 | pixelColorR[j] & 0x0000FFFF ;
-            }
-            picLC.setPixels(pixelColorL,0,picL.getWidth(),0,i,picL.getWidth(),1);
-        }
-
-        return picLC;
+    @Override
+    public void onSaveInstanceState(final Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("AlignCounter", ALIGN_COUNTER);
+        outState.putInt("Orientation",OrientationOnRightPic);
     }
+
 
     public void backButton(View view){
 
@@ -220,6 +261,29 @@ public class CombinePhotos extends AppCompatActivity{
             e.printStackTrace();
             showToast("Not Saved");
         }
+    }
+
+    public void autoAlignButton(View view){
+        if(ALIGN_COUNTER==0){
+            if(mMemoryCache.get(photoKeyAligned)!=null){
+                comPic.setImageBitmap(mMemoryCache.get(photoKeyAligned));
+            }else{
+                alignedPic = AutoAlign.alignAllCols(picL,picR);
+                comPic.setImageBitmap(alignedPic);
+                BitmapWorker.addAnswerToMemoryCache(photoKeyAligned,alignedPic);
+                alignedPic = null;
+            }
+            showToast("Aligned");
+            AutoAlignButton.setBackgroundResource(R.drawable.square_tick);
+            ALIGN_COUNTER++;
+        }else{
+            comPic.setImageBitmap(mMemoryCache.get(photoKey));
+            AutoAlignButton.setBackgroundResource(R.drawable.square);
+            ALIGN_COUNTER=0;
+        }
+
+
+
     }
 
     private static File getOutputMediaFile(){

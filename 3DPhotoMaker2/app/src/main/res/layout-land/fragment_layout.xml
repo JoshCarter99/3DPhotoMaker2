@@ -84,13 +84,22 @@
         android:id="@+id/squareButton"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginEnd="20dp"
+        android:layout_marginStart="15dp"
         android:layout_marginTop="95dp"
         android:background="@drawable/square"
         android:contentDescription="@string/square"
         android:scaleType="fitCenter" />
+
+    <ImageView
+        android:id="@+id/bigSquare"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/big_square" />
 
    <!-- <Button
         android:id="@+id/restart"

@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.ImageFormat;
@@ -85,6 +86,7 @@ public class CameraFragment extends Fragment
     public Button photoButton;
     public ImageButton FlashButton, SquareButton;
     public ImageView BigSquare;
+    public int OrientationOnRightPic;
 
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
@@ -922,6 +924,11 @@ public class CameraFragment extends Fragment
         switch (view.getId()) {
             case R.id.photo: {
                 Log.d("test","7");
+
+                if(PIC_COUNTER==1){
+                    OrientationOnRightPic=getResources().getConfiguration().orientation;
+                }
+
                 takePicture();
                 if(PIC_COUNTER==0){
                     photoButton.setText(R.string.right_pic);
@@ -1108,6 +1115,7 @@ public class CameraFragment extends Fragment
         Intent sendPhotosIntent = new Intent(getActivity(), CombinePhotos.class);
         sendPhotosIntent.putExtra(photoKeyLeft, fileLeft);
         sendPhotosIntent.putExtra(photoKeyRight,fileRight);
+        sendPhotosIntent.putExtra("Orientation",OrientationOnRightPic);
         startActivity(sendPhotosIntent);
     }
 

@@ -11,69 +11,76 @@
         android:id="@+id/texture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true" />
 
-    <FrameLayout
+    <!--<FrameLayout
         android:id="@+id/control"
         android:layout_width="match_parent"
         android:layout_height="112dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:background="@color/control_background">
+        android:background="@color/control_background">-->
 
-        <Button
-            android:id="@+id/photo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/left_pic" />
+    <ImageButton
+        android:id="@+id/photo"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginBottom="21dp"
+        android:background="@drawable/camera_button"
+        android:scaleType="centerCrop" />
+        <!--android:text="@string/left_pic" -->
 
-        <ImageButton
-            android:id="@+id/info"
-            android:contentDescription="@string/description_info"
-            style="@android:style/Widget.Material.Light.Button.Borderless"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|end"
-            android:padding="20dp"
-            android:src="@drawable/ic_action_info" />
 
-    </FrameLayout>
+    <ImageButton
+        android:id="@+id/info"
+        style="@android:style/Widget.Material.Light.Button.Borderless"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignBottom="@+id/flashButton"
+        android:layout_alignParentStart="true"
+        android:layout_gravity="center_vertical|end"
+        android:layout_marginStart="17dp"
+        android:background="@drawable/info_4"
+        android:contentDescription="@string/description_info"
+        android:padding="20dp" />
+
+    <!--</FrameLayout>-->
 
     <ImageButton
         android:id="@+id/flashButton"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_marginEnd="15dp"
-        android:layout_marginTop="35dp"
-        android:background="@drawable/not_flash"
+        android:layout_marginEnd="14dp"
+        android:layout_marginTop="37dp"
+        android:background="@drawable/not_flash_4"
         android:contentDescription="@string/flash"
-        android:scaleType="fitCenter" />
+        android:scaleType="centerCrop" />
 
     <ImageButton
         android:id="@+id/squareButton"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="95dp"
-        android:background="@drawable/square"
+        android:layout_alignTop="@+id/flashButton"
+        android:layout_marginEnd="11dp"
+        android:layout_toStartOf="@+id/flashButton"
+        android:background="@drawable/not_tick_4"
         android:contentDescription="@string/square"
         android:scaleType="fitCenter" />
 
     <ImageView
         android:id="@+id/bigSquare"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:visibility="invisible"
-        app:srcCompat="@drawable/big_square" />
+        app:srcCompat="@drawable/big_square_4" />
 
 
 </RelativeLayout>

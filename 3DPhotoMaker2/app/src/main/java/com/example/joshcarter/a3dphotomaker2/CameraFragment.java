@@ -83,7 +83,7 @@ public class CameraFragment extends Fragment
     private int FLASH_COUNTER;
     private int SQUARE_COUNTER;
 
-    public Button photoButton;
+    public ImageButton photoButton;
     public ImageButton FlashButton, SquareButton;
     public ImageView BigSquare;
     public int OrientationOnRightPic;
@@ -383,19 +383,19 @@ public class CameraFragment extends Fragment
         if (savedInstanceState != null) {
             FLASH_COUNTER = savedInstanceState.getInt("FlashCounter");
             if(FLASH_COUNTER==1){
-                FlashButton.setBackgroundResource(R.drawable.not_flash);
+                FlashButton.setBackgroundResource(R.drawable.not_flash_4);
             }else if(FLASH_COUNTER==2){
-                FlashButton.setBackgroundResource(R.drawable.flash2);
+                FlashButton.setBackgroundResource(R.drawable.flash_4);
             }else{
-                FlashButton.setBackgroundResource(R.drawable.auto_flash);
+                FlashButton.setBackgroundResource(R.drawable.auto_flash_4);
             }
 
             SQUARE_COUNTER = savedInstanceState.getInt("SquareCounter");
             if(SQUARE_COUNTER==1){
-                SquareButton.setBackgroundResource(R.drawable.square);
+                SquareButton.setBackgroundResource(R.drawable.not_tick_4);
                 BigSquare.setVisibility(View.INVISIBLE);
             }else{
-                SquareButton.setBackgroundResource(R.drawable.square_tick);
+                SquareButton.setBackgroundResource(R.drawable.square_tick_4);
                 BigSquare.setVisibility(View.VISIBLE);
             }
 
@@ -930,8 +930,9 @@ public class CameraFragment extends Fragment
                 }
 
                 takePicture();
-                if(PIC_COUNTER==0){
-                    photoButton.setText(R.string.right_pic);
+                if(PIC_COUNTER==0) {
+                    //photoButton.setText(R.string.right_pic);
+                    photoButton.setBackgroundResource(R.drawable.camera_button2);
                 }
                 Log.d("test","8");
                 break;
@@ -950,13 +951,13 @@ public class CameraFragment extends Fragment
                 Log.d("flashButton","hello");
                 if(FLASH_COUNTER==1){
                     FLASH_COUNTER++;
-                    FlashButton.setBackgroundResource(R.drawable.flash2);
+                    FlashButton.setBackgroundResource(R.drawable.flash_4);
                 }else if(FLASH_COUNTER==2){
                     FLASH_COUNTER++;
-                    FlashButton.setBackgroundResource(R.drawable.auto_flash);
+                    FlashButton.setBackgroundResource(R.drawable.auto_flash_4);
                 }else{
                     FLASH_COUNTER=1;
-                    FlashButton.setBackgroundResource(R.drawable.not_flash);
+                    FlashButton.setBackgroundResource(R.drawable.not_flash_4);
                 }
                 break;
             }
@@ -964,11 +965,11 @@ public class CameraFragment extends Fragment
                 Log.d("squareButton","hello");
                 if(SQUARE_COUNTER==1){
                     SQUARE_COUNTER++;
-                    SquareButton.setBackgroundResource(R.drawable.square_tick);
+                    SquareButton.setBackgroundResource(R.drawable.not_tick_4);
                     BigSquare.setVisibility(View.VISIBLE);
                 }else{
                     SQUARE_COUNTER=1;
-                    SquareButton.setBackgroundResource(R.drawable.square);
+                    SquareButton.setBackgroundResource(R.drawable.square_tick_4);
                     BigSquare.setVisibility(View.INVISIBLE);
                 }
                 break;
@@ -1112,7 +1113,7 @@ public class CameraFragment extends Fragment
         Uri fileLeft = Uri.fromFile(mFileL);
         Uri fileRight = Uri.fromFile(mFileR);
 
-        Intent sendPhotosIntent = new Intent(getActivity(), CombinePhotos.class);
+        Intent sendPhotosIntent = new Intent(getActivity(), CombinePhotos2.class);
         sendPhotosIntent.putExtra(photoKeyLeft, fileLeft);
         sendPhotosIntent.putExtra(photoKeyRight,fileRight);
         sendPhotosIntent.putExtra("Orientation",OrientationOnRightPic);

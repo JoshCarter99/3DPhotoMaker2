@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.joshcarter.a3dphotomaker2.CombinePhotos">
+    tools:context="com.example.joshcarter.a3dphotomaker2.CombinePhotos2">
 
     <ImageView
         android:id="@+id/anaglyph"
@@ -21,44 +21,93 @@
         app:layout_constraintVertical_bias="1.0"
         app:srcCompat="@drawable/ic_launcher" />
 
-    <Button
+    <ImageButton
         android:id="@+id/backButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginLeft="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/back_button_3"
         android:onClick="backButton"
         android:text="@string/back_button"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <ImageButton
+        android:id="@+id/backButtonMain"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/back_4"
+        android:onClick="backButtonMain"
+        android:text="@string/back_button"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
         android:id="@+id/saveButton"
         style="@style/MainButtonStyle"
-        android:layout_height="60dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="36dp"
+        android:background="@drawable/save_button"
         android:onClick="saveButton"
         android:text="@string/save"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/autoAlignButton"
-        android:layout_width="53dp"
-        android:layout_height="54dp"
-        android:background="@color/control_background"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginTop="36dp"
+        android:background="@drawable/align_5"
         android:onClick="autoAlignButton"
         android:scaleType="centerCrop"
+        app:layout_constraintEnd_toStartOf="@+id/saveButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/touchAlignButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginTop="36dp"
+        android:background="@drawable/touch_align_5"
+        android:onClick="touchAlign"
+        app:layout_constraintEnd_toStartOf="@+id/autoAlignButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/manualAlignButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginTop="36dp"
+        android:background="@drawable/manual_align_5"
+        android:onClick="manualAlignButton"
+        app:layout_constraintEnd_toStartOf="@+id/touchAlignButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/touchInstructions"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:background="@color/control_background"
+        android:fontFamily="serif"
+        android:gravity="center"
+        android:text="@string/focal_point"
+        android:textColor="@android:color/background_light"
+        android:textSize="24sp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.951"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.428"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.072"
-        app:srcCompat="@drawable/square" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

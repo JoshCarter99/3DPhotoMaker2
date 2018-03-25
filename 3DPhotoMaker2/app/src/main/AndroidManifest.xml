@@ -32,11 +32,25 @@
         </activity>
 
         <activity
-
             android:name=".CombinePhotos"
             android:parentActivityName=".CameraActivity" >
         </activity>
 
+        <activity
+            android:name=".CombinePhotos2"
+            android:parentActivityName=".CameraActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.joshcarter.a3dphotomaker2.CameraActivity" />
+        </activity>
+
+        <activity
+            android:name=".ManualAlign"
+            android:parentActivityName=".CombinePhotos2" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.joshcarter.a3dphotomaker2.CombinePhotos2" />
+        </activity>
         <!-- android:screenOrientation="portrait" -->
 
     </application>

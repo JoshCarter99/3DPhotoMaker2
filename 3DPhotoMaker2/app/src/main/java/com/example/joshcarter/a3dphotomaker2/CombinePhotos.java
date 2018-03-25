@@ -249,6 +249,11 @@ public class CombinePhotos extends AppCompatActivity{
     }
 
     public void saveButton(View view){
+        if(ALIGN_COUNTER==0){
+            picLR = mMemoryCache.get(photoKey);
+        }else{
+            picLR = mMemoryCache.get(photoKeyAligned);
+        }
         try {
             file = getOutputMediaFile();
             OutputStream fOut = null;
@@ -261,6 +266,7 @@ public class CombinePhotos extends AppCompatActivity{
             e.printStackTrace();
             showToast("Not Saved");
         }
+        picLR = null;
     }
 
     public void autoAlignButton(View view){
@@ -274,11 +280,11 @@ public class CombinePhotos extends AppCompatActivity{
                 alignedPic = null;
             }
             showToast("Aligned");
-            AutoAlignButton.setBackgroundResource(R.drawable.square_tick);
+            AutoAlignButton.setBackgroundResource(R.drawable.aligned_4);
             ALIGN_COUNTER++;
         }else{
             comPic.setImageBitmap(mMemoryCache.get(photoKey));
-            AutoAlignButton.setBackgroundResource(R.drawable.square);
+            AutoAlignButton.setBackgroundResource(R.drawable.align_4);
             ALIGN_COUNTER=0;
         }
 

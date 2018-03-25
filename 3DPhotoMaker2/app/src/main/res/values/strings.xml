@@ -14,6 +14,11 @@
     <string name="square">square</string>
     <string name="left_toast">Left Photo Captured</string>
     <string name="right_toast">Combining!</string>
+    <string name="focal_point">Choose Focal Point</string>
+    <string name="alignment_failed_message">Alignment Failed</string>
+    <string name="manual_align_message">Manually align?</string>
+    <string name="manual_align_yes">Align</string>
+    <string name="manual_align_no">Cancel</string>
 
     <string name="info_message">
         <![CDATA[

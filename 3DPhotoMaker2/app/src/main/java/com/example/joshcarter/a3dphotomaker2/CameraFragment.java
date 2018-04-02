@@ -67,6 +67,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.Math.PI;
+import static java.lang.Math.incrementExact;
 import static java.lang.Math.round;
 
 /*
@@ -80,12 +81,14 @@ public class CameraFragment extends Fragment
     private static final int REQUEST_CAMERA_PERMISSION = 1;
     private static final String FRAGMENT_DIALOG = "dialog";
     private int PIC_COUNTER = 0;
+    private int PIC_COUNTER_INITITAL = 0;
     private int FLASH_COUNTER;
     private int SQUARE_COUNTER;
 
     public ImageButton photoButton;
     public ImageButton FlashButton, SquareButton;
     public ImageView BigSquare;
+    //public ImageView InfoView = new ImageView(getContext());
     public int OrientationOnRightPic;
 
     static {
@@ -208,6 +211,14 @@ public class CameraFragment extends Fragment
             if(PIC_COUNTER==0) {
                 // Saving image to mFileL?
                 mBackgroundHandler.post(new ImageSaver(reader.acquireNextImage(), mFileL));
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        photoButton.setBackgroundResource(R.drawable.camera_button2);
+                    }
+                });
+
             }else if(PIC_COUNTER==1){
                 Log.d("timeStarts","timer1");
                 mBackgroundHandler.post(new ImageSaver(reader.acquireNextImage(), mFileR));
@@ -367,6 +378,7 @@ public class CameraFragment extends Fragment
         FlashButton = view.findViewById(R.id.flashButton);
         SquareButton = view.findViewById(R.id.squareButton);
         BigSquare = view.findViewById(R.id.bigSquare);
+        //InfoView.setImageResource(R.drawable.back_4);
         view.findViewById(R.id.photo).setOnClickListener(this);
         view.findViewById(R.id.info).setOnClickListener(this);
         view.findViewById(R.id.flashButton).setOnClickListener(this);
@@ -416,7 +428,7 @@ public class CameraFragment extends Fragment
 
     private static File getOutputMediaFile(String LorR){
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "3DPhotoMaker2");
+                Environment.DIRECTORY_PICTURES), "3D Camera - Files");
 
         if (!mediaStorageDir.exists()){
             if (!mediaStorageDir.mkdirs()){
@@ -466,6 +478,9 @@ public class CameraFragment extends Fragment
     public void onStop(){
         super.onStop();
         Log.d("Stop","1");
+        PIC_COUNTER=0;
+        PIC_COUNTER_INITITAL=0;
+        photoButton.setBackgroundResource(R.drawable.camera_button);
     }
 
     public void onDestroy(){
@@ -847,24 +862,26 @@ public class CameraFragment extends Fragment
                                                @NonNull CaptureRequest request,
                                                @NonNull TotalCaptureResult result) {
                     //showToast("Saved!");
+
+                    unlockFocus();
+
+
                     Log.d("PicCounterAtSave",Integer.toString(PIC_COUNTER));
                     if (PIC_COUNTER == 0) {
                         showToast(getString(R.string.left_toast));
+                        PIC_COUNTER++;
+                        PIC_COUNTER_INITITAL=0;
+
+                        //CameraFragment.photoButton.setBackgroundResource(R.drawable.camera_button2);
+
                     } else if (PIC_COUNTER==1){
+                        SendImages();
                         showToast(getString(R.string.right_toast));
                     }else{
                         showToast("Saved!");
+                        Log.d("ErrorMessage","error!");
                     }
 
-
-
-                    unlockFocus();
-                    PIC_COUNTER++;
-
-                    if(PIC_COUNTER==2){
-                        PIC_COUNTER=0;
-                        SendImages();
-                    }
                 }
             };
 
@@ -925,15 +942,20 @@ public class CameraFragment extends Fragment
             case R.id.photo: {
                 Log.d("test","7");
 
+                PIC_COUNTER_INITITAL++;
+
                 if(PIC_COUNTER==1){
                     OrientationOnRightPic=getResources().getConfiguration().orientation;
                 }
 
-                takePicture();
-                if(PIC_COUNTER==0) {
-                    //photoButton.setText(R.string.right_pic);
-                    photoButton.setBackgroundResource(R.drawable.camera_button2);
+                Log.d("PIC_COUNTER",Integer.toString(PIC_COUNTER));
+                Log.d("PIC_COUNTER_INITIAL",Integer.toString(PIC_COUNTER_INITITAL));
+
+                if (PIC_COUNTER_INITITAL == 1) {
+                    takePicture();
                 }
+
+
                 Log.d("test","8");
                 break;
             }
@@ -943,6 +965,7 @@ public class CameraFragment extends Fragment
                     new AlertDialog.Builder(activity)
                             .setMessage(R.string.info_message)
                             .setPositiveButton(android.R.string.ok, null)
+                            .setView(R.layout.info_layout)
                             .show();
                 }
                 break;
@@ -966,11 +989,11 @@ public class CameraFragment extends Fragment
                 if(SQUARE_COUNTER==1){
                     SQUARE_COUNTER++;
                     SquareButton.setBackgroundResource(R.drawable.not_tick_4);
-                    BigSquare.setVisibility(View.VISIBLE);
+                    BigSquare.setVisibility(View.INVISIBLE);
                 }else{
                     SQUARE_COUNTER=1;
                     SquareButton.setBackgroundResource(R.drawable.square_tick_4);
-                    BigSquare.setVisibility(View.INVISIBLE);
+                    BigSquare.setVisibility(View.VISIBLE);
                 }
                 break;
             }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <string name="app_name">3DPhotoMaker2</string>
+    <string name="app_name">3D Camera</string>
     <string name="left_pic">Left Photo</string>
     <string name="right_pic">Right Photo</string>
     <string name="description_info">Info</string>
@@ -23,8 +23,7 @@
     <string name="info_message">
         <![CDATA[
 
-
-            Write instructions on how to use app.
+            Take right photo 6cm to the right of the left photo, keeping your object central.
 
 
         ]]>

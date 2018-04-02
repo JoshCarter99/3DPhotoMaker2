@@ -278,6 +278,8 @@ public class CombinePhotos2 extends AppCompatActivity{
 
                 BitmapWorker.addAnswerToMemoryCache(photoKey,picLR);
                 picLR = null;
+                //new File(fileLeft.getPath()).delete();
+                //new File(fileRight.getPath()).delete();
             }
 
         }
@@ -350,6 +352,7 @@ public class CombinePhotos2 extends AppCompatActivity{
                 break;
         }
 
+        /*
         if(ALIGN_COUNTER==1){
             picLR = mMemoryCache.get(photoKeyAligned);
         }else if(TOUCH_ALIGN_COUNTER==1){
@@ -358,7 +361,7 @@ public class CombinePhotos2 extends AppCompatActivity{
             picLR = manualPic;
         }else{
             picLR = mMemoryCache.get(photoKey);
-        }
+        }*/
 
         try {
             file = getOutputMediaFile();
@@ -653,7 +656,7 @@ public class CombinePhotos2 extends AppCompatActivity{
 
     private static File getOutputMediaFile(){
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "3DPhotoMaker2");
+                Environment.DIRECTORY_PICTURES), "3D Camera");
 
         if (!mediaStorageDir.exists()){
             if (!mediaStorageDir.mkdirs()){

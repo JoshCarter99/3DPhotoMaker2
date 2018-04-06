@@ -88,11 +88,11 @@ public class ManualAlign extends AppCompatActivity{
             comPicLeft.setY(comPicLeft.getY()-shiftVer);
         }
 
-        if (CombinePhotos2.orientation == 1) {
+        /*if (CombinePhotos2.orientation == 1) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
-        }
+        }*/
     }
 
     public void leftButton(View view){
@@ -139,6 +139,7 @@ public class ManualAlign extends AppCompatActivity{
         Intent manualAlignBackIntent = new Intent(this, CombinePhotos2.class);
         manualAlignBackIntent.putExtra("shiftHor",shiftHor);
         manualAlignBackIntent.putExtra("shiftVer",shiftVer);
+        //manualAlignBackIntent.putExtra("Orientation",CombinePhotos2.orientation);
         startActivity(manualAlignBackIntent);
     }
 

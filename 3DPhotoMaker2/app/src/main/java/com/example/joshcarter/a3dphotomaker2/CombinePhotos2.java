@@ -9,15 +9,18 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.LruCache;
 import android.view.MotionEvent;
+import android.view.SoundEffectConstants;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -43,13 +46,13 @@ public class CombinePhotos2 extends AppCompatActivity{
     public Bitmap picRC,picLR, alignedPic, combinedPic, manualPic;
     public static Bitmap picL, picR;
     public Uri fileLeft, fileRight;
-    public ImageView comPic;
-    public TextView TouchInstructions;
+    public ImageView comPic, InfoLayout;
+    public TextView TouchInstructions, VerticalAlignMessage, TouchAlignMessage, ManualAlignMessage, InfoMessage;
     public File file;
     public double picWidth, picHeight, picRatio;
     LruCache<String, Bitmap> mMemoryCache;
     BitmapWorkerTask BitmapWorker;
-    public ImageButton AutoAlignButton, TouchAlignButton, ManualAlignButton, SaveButton, BackButton, BackButtonMain;
+    public ImageButton AutoAlignButton, TouchAlignButton, ManualAlignButton, SaveButton, BackButton, BackButtonMain, InfoButton;
 
     public int newPicHeight, newPicWidth;
 
@@ -66,7 +69,7 @@ public class CombinePhotos2 extends AppCompatActivity{
     public int MANUAL_ALIGN_COUNTER=0;
     // 0 is normal, 1 is autoAlign, 2 is touchAlign, 3 is manualAlign.
     public int CURRENT_PIC=0;
-    public int OrientationOnRightPic;
+    public static int OrientationOnRightPic;
     public int shiftHor=1;
     public int shiftVer=1;
 
@@ -95,6 +98,13 @@ public class CombinePhotos2 extends AppCompatActivity{
         BackButtonMain = findViewById(R.id.backButtonMain);
         SaveButton = findViewById(R.id.saveButton);
         TouchInstructions = findViewById(R.id.touchInstructions);
+        VerticalAlignMessage = findViewById(R.id.verticalAlignMessage);
+        TouchAlignMessage = findViewById(R.id.touchAlignMessage);
+        ManualAlignMessage = findViewById(R.id.manualAlignMessage);
+        InfoMessage = findViewById(R.id.infoMessage);
+
+        InfoLayout = findViewById(R.id.infoLayout);
+        InfoButton = findViewById(R.id.infoButton);
 
         /////////
         RetainFragment retainFragment =
@@ -122,7 +132,7 @@ public class CombinePhotos2 extends AppCompatActivity{
                 picLR = mMemoryCache.get(photoKey);
             }
 
-            TouchAlignButton.setVisibility(View.GONE);
+            //TouchAlignButton.setVisibility(View.GONE);
 
             //picLR = BitmapWorker.getAnswerFromMemoryCache(photoKey);
             comPic.setImageBitmap(picLR);
@@ -156,14 +166,28 @@ public class CombinePhotos2 extends AppCompatActivity{
 
                 combinedPic=null;
 
+
+
+                //ManualAlignButton.setBackgroundResource(R.drawable.touch_aligned_5);
+
+
+                CURRENT_PIC=3;
+
+                //OrientationOnRightPic = getIntent().getIntExtra("Orientation",0);
+                Log.d("OrientationOnRightPic",Integer.toString(OrientationOnRightPic));
+                if (OrientationOnRightPic == Configuration.ORIENTATION_LANDSCAPE) {
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+                }
+                else {
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+                }
+
                 shiftHor = getIntent().getIntExtra("shiftHor",1);
                 shiftVer = getIntent().getIntExtra("shiftVer",1);
                 manualPic = AutoAlign2.combinePhotos(picL,picR, shiftVer, shiftHor);
-                //ManualAlignButton.setBackgroundResource(R.drawable.touch_aligned_5);
                 comPic.setImageBitmap(manualPic);
                 MANUAL_ALIGN_COUNTER=1;
 
-                CURRENT_PIC=3;
 
                 if(ALIGN_COUNTER!=0){
                     AutoAlignButton.setBackgroundResource(R.drawable.align_5);
@@ -181,6 +205,8 @@ public class CombinePhotos2 extends AppCompatActivity{
                 fileRight = intent.getParcelableExtra(photoKeyRight);
                 OrientationOnRightPic = intent.getIntExtra("Orientation",0);
 
+                Log.d("OrientationOfRightPic", Integer.toString(OrientationOnRightPic));
+
                 if (OrientationOnRightPic == Configuration.ORIENTATION_LANDSCAPE) {
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
                 }
@@ -195,8 +221,12 @@ public class CombinePhotos2 extends AppCompatActivity{
                     e.printStackTrace();
                 }
 
+
                 picHeight = picL.getHeight();
                 picWidth = picL.getWidth();
+
+                Log.d("picHeight",Double.toString(picHeight));
+                Log.d("picWidth",Double.toString(picWidth));
 
                 /// maybe move this above rotation???
                 if(picHeight>1920||picWidth>1920){
@@ -213,25 +243,143 @@ public class CombinePhotos2 extends AppCompatActivity{
                     picR = Bitmap.createScaledBitmap(picR,newPicWidth, newPicHeight, true);
                 }
 
+                //comPic.setImageBitmap(picL);
+
+                Log.d("picHeightAfterStrech",Integer.toString(picL.getHeight()));
+                Log.d("picWidthAfterStrech",Integer.toString(picL.getWidth()));
+
 
                 DisplayMetrics displayMetrics = new DisplayMetrics();
                 getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
                 double height = displayMetrics.heightPixels;
                 double width = displayMetrics.widthPixels;
 
+                Log.d("Height",Double.toString(height));
+                Log.d("Width",Double.toString(width));
+
                 if((picL.getHeight()*width!=picL.getWidth()*height)||(picL.getHeight()*height!=picL.getWidth()*width)){
-                    if(height>width){
-                        double ratio = width/height;
-                        int newHeight = (int) round(picL.getWidth()*ratio);
-                        picL=Bitmap.createBitmap(picL, 0,picL.getHeight()-newHeight,picL.getWidth(), newHeight);
-                        picR=Bitmap.createBitmap(picR, 0,picR.getHeight()-newHeight,picR.getWidth(), newHeight);
-                    }else{
-                        double ratio = height/width;
-                        int newHeight = (int) round(picL.getWidth()*ratio);
-                        int startPoint = (int) round(((double)(picL.getHeight()-newHeight))/2);
-                        picL=Bitmap.createBitmap(picL, 0,startPoint,picL.getWidth(), newHeight);
-                        picR=Bitmap.createBitmap(picR, 0,startPoint,picR.getWidth(), newHeight);
+                    Log.d("Helllooooo","wow");
+
+                    /*if(picL.getHeight()>picL.getWidth()){
+                        if(height>width){
+                            double ratio = width/height;
+                            int newWidth = (int) round(picL.getHeight()*ratio);
+                            Log.d("ratio1", Double.toString(ratio));
+                            Log.d("WIDTH0", Integer.toString(picL.getWidth()));
+                            Log.d("HEIGHT0", Integer.toString(newWidth));
+                            //int startPoint = (int) round(((double)(picL.getHeight()-newHeight))/2);
+                            picL=Bitmap.createBitmap(picL, 0,0,newWidth, picL.getHeight());
+                            picR=Bitmap.createBitmap(picR, 0,0,newWidth, picR.getHeight());
+                        }else{
+                            double ratio = height/width;
+                            int newWidth = (int) round(picL.getHeight()*ratio);
+                            Log.d("ratio1", Double.toString(ratio));
+                            Log.d("WIDTH1", Integer.toString(picL.getWidth()));
+                            Log.d("HEIGHT1", Integer.toString(newWidth));
+                            //int startPoint = (int) round(((double)(picL.getHeight()-newHeight))/2);
+                            picL=Bitmap.createBitmap(picL, 0,picL.getWidth()-newWidth, picL.getHeight(),newWidth);
+                            picR=Bitmap.createBitmap(picR, 0,picL.getWidth()-newWidth, picL.getHeight(),newWidth);
+                        }
+                    }else {
+                        if(height>width) {
+                            double ratio = width / height;
+                            int newHeight = (int) round(picL.getWidth() * ratio);
+                            Log.d("ratio2", Double.toString(ratio));
+                            Log.d("WIDTH2", Integer.toString(picL.getWidth()));
+                            Log.d("HEIGHT2", Integer.toString(newHeight));
+                            //picL = Bitmap.createBitmap(picL, 0, picL.getHeight() - newHeight, picL.getWidth(), newHeight);
+                            //picR = Bitmap.createBitmap(picR, 0, picR.getHeight() - newHeight, picR.getWidth(), newHeight);
+                        }else{
+
+                            double ratio = height/width;
+                            int newHeight = (int) round(picL.getWidth()*ratio);
+                            Log.d("ratio3", Double.toString(ratio));
+                            Log.d("WIDTH3", Integer.toString(picL.getWidth()));
+                            Log.d("HEIGHT3", Integer.toString(newHeight));
+                            int startPoint = (int) round(((double)(picL.getHeight()-newHeight))/2);
+                            picL=Bitmap.createBitmap(picL, 0,startPoint,picL.getWidth(), newHeight);
+                            picR=Bitmap.createBitmap(picR, 0,startPoint,picR.getWidth(), newHeight);
+                        }
+                    }*/
+
+                    if(picL.getHeight()>picL.getWidth()){
+                        if(height>width){
+                            if(picL.getHeight()*width>picL.getWidth()*height){
+                                Log.d("WIDTH3", Integer.toString(1));
+                                double ratio = height/width;
+                                int newHeight = (int) round(picL.getWidth()*ratio);
+                                picL=Bitmap.createBitmap(picL, 0,0,picL.getWidth(), newHeight);
+                                picR=Bitmap.createBitmap(picR, 0,0,picR.getWidth(), newHeight);
+
+                            }else{
+                                // WORKS
+                                Log.d("WIDTH3", Integer.toString(2));
+                                double ratio = width/height;
+                                int newWidth = (int) round(picL.getHeight()*ratio);
+                                picL=Bitmap.createBitmap(picL, 0,0,newWidth, picL.getHeight());
+                                picR=Bitmap.createBitmap(picR, 0,0,newWidth, picR.getHeight());
+                            }
+                        }else{
+                            if(picL.getHeight()*height>picL.getWidth()*width){
+                                Log.d("WIDTH3", Integer.toString(3));
+                                double ratio = width/height;
+                                int newHeight = (int) round(picL.getWidth()*ratio);
+                                picL=Bitmap.createBitmap(picL, 0,0,picL.getWidth(), newHeight);
+                                picR=Bitmap.createBitmap(picR, 0,0,picR.getWidth(), newHeight);
+
+                            }else{
+                                Log.d("WIDTH3", Integer.toString(4));
+                                double ratio = height/width;
+                                int newWidth = (int) round(picL.getHeight()*ratio);
+                                picL=Bitmap.createBitmap(picL, 0,0,newWidth, picL.getHeight());
+                                picR=Bitmap.createBitmap(picR, 0,0,newWidth, picR.getHeight());
+                            }
+                        }
+                    }else {
+                        if(height>width) {
+                            if(picL.getWidth()*width>picL.getHeight()*height){
+                                // WORKS - maybe
+                                Log.d("WIDTH3", Integer.toString(5));
+
+                                double ratio = height/width;
+                                int newWidth = (int) round(picL.getHeight() * ratio);
+                                int startPoint = (int) round(((double)(picL.getWidth()-newWidth))/2);
+                                picL = Bitmap.createBitmap(picL, startPoint, 0, newWidth, picL.getHeight());
+                                picR = Bitmap.createBitmap(picR, startPoint, 0, newWidth, picR.getHeight());
+
+
+                            }else{
+                                // WORKS
+                                Log.d("WIDTH3", Integer.toString(6));
+                                double ratio = width/height;
+                                int newWidth = (int) round(picL.getWidth() * ratio);
+                                picL = Bitmap.createBitmap(picL, 0, picL.getHeight() - newWidth, picL.getWidth(), newWidth);
+                                picR = Bitmap.createBitmap(picR, 0, picR.getHeight() - newWidth, picR.getWidth(), newWidth);
+                            }
+                        }else{
+                            if(picL.getWidth()*height>picL.getHeight()*width){
+                                // WORKS - maybe
+                                Log.d("WIDTH3", Integer.toString(7));
+
+                                double ratio = width/height;
+                                int newWidth = (int) round(picL.getHeight() * ratio);
+                                picL = Bitmap.createBitmap(picL, picL.getWidth()-newWidth, 0, newWidth, picL.getHeight());
+                                picR = Bitmap.createBitmap(picR, picR.getWidth()-newWidth, 0, newWidth, picR.getHeight());
+
+
+                            }else{
+                                // WORKS
+                                Log.d("WIDTH3", Integer.toString(8));
+                                double ratio = height/width;
+                                int newWidth = (int) round(picL.getWidth() * ratio);
+                                int startPoint = (int) round(((double)(picL.getHeight()-newWidth))/2);
+                                picL = Bitmap.createBitmap(picL, 0, startPoint, picL.getWidth(), newWidth);
+                                picR = Bitmap.createBitmap(picR, 0, startPoint, picR.getWidth(), newWidth);
+                                //picR = Bitmap.createBitmap(picR, 0, picR.getHeight() - newWidth, picR.getWidth(), newWidth);
+                            }
+                        }
                     }
+
                 }
 
 
@@ -258,6 +406,7 @@ public class CombinePhotos2 extends AppCompatActivity{
                 Log.d("timeStarts","timer3");
 
                 comPic.setImageBitmap(picLR);
+
                 CURRENT_PIC=0;
 
 
@@ -268,13 +417,13 @@ public class CombinePhotos2 extends AppCompatActivity{
                 }*/
 
                 //int currentOrientation = getResources().getConfiguration().orientation;
-                Log.d(Integer.toString(orientation),Integer.toString(Configuration.ORIENTATION_LANDSCAPE));
+                /*Log.d(Integer.toString(orientation),Integer.toString(Configuration.ORIENTATION_LANDSCAPE));
                 Log.d(Integer.toString(orientation),Integer.toString(Configuration.ORIENTATION_PORTRAIT));
                 if (orientation == 1) {
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
                 } else {
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
-                }
+                }*/
 
                 BitmapWorker.addAnswerToMemoryCache(photoKey,picLR);
                 picLR = null;
@@ -376,6 +525,29 @@ public class CombinePhotos2 extends AppCompatActivity{
             showToast("Not Saved");
         }
         picLR = null;
+    }
+
+    public void infoButton(View view){
+
+        InfoLayout.setVisibility(View.VISIBLE);
+        VerticalAlignMessage.setVisibility(View.VISIBLE);
+        TouchAlignMessage.setVisibility(View.VISIBLE);
+        ManualAlignMessage.setVisibility(View.VISIBLE);
+        InfoMessage.setVisibility(View.VISIBLE);
+
+        BackButtonMain.setEnabled(false);
+        BackButton.setEnabled(false);
+        InfoButton.setEnabled(false);
+        AutoAlignButton.setEnabled(false);
+        TouchAlignButton.setEnabled(false);
+        ManualAlignButton.setEnabled(false);
+
+        InfoLayout.setOnTouchListener(removeInfoLayout);
+        VerticalAlignMessage.setOnTouchListener(removeInfoLayout);
+        TouchAlignMessage.setOnTouchListener(removeInfoLayout);
+        ManualAlignMessage.setOnTouchListener(removeInfoLayout);
+        InfoMessage.setOnTouchListener(removeInfoLayout);
+
     }
 
     public void autoAlignButton(View view){
@@ -557,11 +729,42 @@ public class CombinePhotos2 extends AppCompatActivity{
             TouchInstructions.setVisibility(View.GONE);
             BackButton.setVisibility(View.GONE);
 
-            AutoAlignButton.setVisibility(View.VISIBLE);
-            TouchAlignButton.setVisibility(View.VISIBLE);
             SaveButton.setVisibility(View.VISIBLE);
             ManualAlignButton.setVisibility(View.VISIBLE);
+            AutoAlignButton.setVisibility(View.VISIBLE);
+            TouchAlignButton.setVisibility(View.VISIBLE);
             BackButtonMain.setVisibility(View.VISIBLE);
+
+            return true;
+
+        }
+    };
+
+    private View.OnTouchListener removeInfoLayout = new View.OnTouchListener() {
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+
+            InfoMessage.playSoundEffect(SoundEffectConstants.CLICK);
+
+            InfoLayout.setOnTouchListener(null);
+            VerticalAlignMessage.setOnTouchListener(null);
+            TouchAlignMessage.setOnTouchListener(null);
+            ManualAlignMessage.setOnTouchListener(null);
+            InfoMessage.setOnTouchListener(null);
+
+            InfoLayout.setVisibility(View.GONE);
+            VerticalAlignMessage.setVisibility(View.GONE);
+            TouchAlignMessage.setVisibility(View.GONE);
+            ManualAlignMessage.setVisibility(View.GONE);
+            InfoMessage.setVisibility(View.GONE);
+
+            BackButtonMain.setEnabled(true);
+            BackButton.setEnabled(true);
+            InfoButton.setEnabled(true);
+            AutoAlignButton.setEnabled(true);
+            TouchAlignButton.setEnabled(true);
+            ManualAlignButton.setEnabled(true);
 
             return true;
 

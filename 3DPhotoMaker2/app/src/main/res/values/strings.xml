@@ -29,6 +29,42 @@
         ]]>
     </string>
 
+    <string name="vertical_align_message">
+        <![CDATA[
+
+            VERTICAL ALIGN\n
+            - Vertically align the images
+
+        ]]>
+    </string>
+
+    <string name="touch_align_message">
+        <![CDATA[
+
+            TOUCH ALIGN\n
+            - Align images at a point
+
+        ]]>
+    </string>
+
+    <string name="manual_align_message_2">
+        <![CDATA[
+
+            MANUAL ALIGN\n
+            - Manually align the images
+
+        ]]>
+    </string>
+
+    <string name="info_message_2">
+        <![CDATA[
+
+            Align the images at the point you want in focus, using the buttons above
+
+        ]]>
+    </string>
+
+
 </resources>
 
 

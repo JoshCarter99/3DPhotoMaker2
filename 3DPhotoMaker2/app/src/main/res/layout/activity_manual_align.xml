@@ -11,7 +11,7 @@
         android:id="@+id/anaglyphRight"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@android:color/transparent"
+        android:background="@android:color/background_dark"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="1.0"

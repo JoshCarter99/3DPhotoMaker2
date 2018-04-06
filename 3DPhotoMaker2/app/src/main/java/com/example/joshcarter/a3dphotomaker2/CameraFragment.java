@@ -29,6 +29,7 @@ import android.media.Image;
 import android.media.ImageReader;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -82,6 +83,7 @@ public class CameraFragment extends Fragment
     private static final String FRAGMENT_DIALOG = "dialog";
     private int PIC_COUNTER = 0;
     private int PIC_COUNTER_INITITAL = 0;
+    private int Auto_flash_counter=0;
     private int FLASH_COUNTER;
     private int SQUARE_COUNTER;
 
@@ -265,6 +267,12 @@ public class CameraFragment extends Fragment
                         } else {
                             runPrecaptureSequence();
                         }
+                    }
+
+                    else{
+                        Log.d("flash",Integer.toString(FLASH_COUNTER));
+                        mState = STATE_PICTURE_TAKEN;
+                        captureStillPicture();
                     }
                     break;
                 }
@@ -942,6 +950,26 @@ public class CameraFragment extends Fragment
             case R.id.photo: {
                 Log.d("test","7");
 
+
+                // If no pic has been captured after first 4 secs, allow another to be taken.
+                if (PIC_COUNTER_INITITAL==0) {
+                    new CountDownTimer(6000, 6000) {
+
+                        public void onTick(long millisUntilFinished) {
+                        }
+
+                        public void onFinish() {
+                            if(PIC_COUNTER==0) {
+                                PIC_COUNTER_INITITAL = 0;
+                                Log.d("TIMER","FINSIHED");
+                            }else{
+                                Log.d("TIMER","FINSIHED-PicCaptured");
+                            }
+                        }
+
+                    }.start();
+                }
+
                 PIC_COUNTER_INITITAL++;
 
                 if(PIC_COUNTER==1){
@@ -982,6 +1010,7 @@ public class CameraFragment extends Fragment
                     FLASH_COUNTER=1;
                     FlashButton.setBackgroundResource(R.drawable.not_flash_4);
                 }
+                setAutoFlash(mPreviewRequestBuilder);
                 break;
             }
             case R.id.squareButton: {
@@ -1004,7 +1033,11 @@ public class CameraFragment extends Fragment
     }
 
     private void setAutoFlash(CaptureRequest.Builder requestBuilder) {
-        Log.d("InSetAutoFlash",Integer.toString(FLASH_COUNTER));
+
+        Log.d("SetAutoFlashCounter",Integer.toString(Auto_flash_counter));
+        Auto_flash_counter++;
+
+        Log.d("Flash_counter",Integer.toString(FLASH_COUNTER));
         if (mFlashSupported) {
             if (FLASH_COUNTER==1){
                 requestBuilder.set(CaptureRequest.CONTROL_AE_MODE,

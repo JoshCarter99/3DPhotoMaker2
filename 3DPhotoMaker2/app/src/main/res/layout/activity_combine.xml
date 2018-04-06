@@ -11,14 +11,14 @@
         android:id="@+id/anaglyph"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@android:color/holo_red_light"
+        android:background="@android:color/background_dark"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/ic_launcher" />
 
     <ImageButton
@@ -60,38 +60,66 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/autoAlignButton"
+        android:id="@+id/infoButton"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginEnd="14dp"
-        android:layout_marginTop="36dp"
-        android:background="@drawable/align_5"
-        android:onClick="autoAlignButton"
+        android:layout_marginTop="34dp"
+        android:background="@drawable/info_4"
+        android:onClick="infoButton"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toStartOf="@+id/saveButton"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/infoLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/control_background"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@android:color/transparent" />
+
+    <ImageButton
+        android:id="@+id/autoAlignButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="14dp"
+        android:background="@drawable/align_5"
+        android:onClick="autoAlignButton"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/saveButton" />
+
 
     <ImageButton
         android:id="@+id/touchAlignButton"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginEnd="14dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="14dp"
         android:background="@drawable/touch_align_5"
         android:onClick="touchAlign"
-        app:layout_constraintEnd_toStartOf="@+id/autoAlignButton"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/autoAlignButton" />
 
     <ImageButton
         android:id="@+id/manualAlignButton"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginEnd="14dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="14dp"
         android:background="@drawable/manual_align_5"
         android:onClick="manualAlignButton"
-        app:layout_constraintEnd_toStartOf="@+id/touchAlignButton"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/touchAlignButton" />
 
     <TextView
         android:id="@+id/touchInstructions"
@@ -110,6 +138,63 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/verticalAlignMessage"
+        android:layout_width="217dp"
+        android:layout_height="42dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="serif"
+        android:text="@string/vertical_align_message"
+        android:textColor="@android:color/background_light"
+        android:textSize="15sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/autoAlignButton"
+        app:layout_constraintTop_toTopOf="@+id/autoAlignButton" />
+
+    <TextView
+        android:id="@+id/touchAlignMessage"
+        android:layout_width="217dp"
+        android:layout_height="42dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="serif"
+        android:text="@string/touch_align_message"
+        android:textColor="@android:color/background_light"
+        android:textSize="15sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/touchAlignButton"
+        app:layout_constraintTop_toTopOf="@+id/touchAlignButton" />
+
+    <TextView
+        android:id="@+id/manualAlignMessage"
+        android:layout_width="217dp"
+        android:layout_height="42dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="serif"
+        android:text="@string/manual_align_message_2"
+        android:textColor="@android:color/background_light"
+        android:textSize="15sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/manualAlignButton"
+        app:layout_constraintTop_toTopOf="@+id/manualAlignButton" />
+
+    <TextView
+        android:id="@+id/infoMessage"
+        android:layout_width="268dp"
+        android:layout_height="104dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="128dp"
+        android:fontFamily="serif"
+        android:text="@string/info_message_2"
+        android:textAlignment="center"
+        android:textColor="@android:color/background_light"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/manualAlignMessage"
+        app:layout_constraintVertical_bias="0.0" />
 
 </android.support.constraint.ConstraintLayout>
 

@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.widget.Button;
 
 import java.util.ArrayList;
@@ -36,6 +37,23 @@ public class CameraActivity extends AppCompatActivity {
                     .replace(R.id.container, CameraFragment.newInstance())
                     .commit();
         }
+    }
+
+    protected void onRestart(){
+        super.onRestart();
+        //getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+        Log.d("restart","Recreating");
+        recreate();
+    }
+
+    //// no back navigation from main.
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            // do nothing
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
 

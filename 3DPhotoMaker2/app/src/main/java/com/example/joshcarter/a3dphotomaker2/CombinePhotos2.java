@@ -19,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.LruCache;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 import android.view.View;
@@ -854,6 +855,19 @@ public class CombinePhotos2 extends AppCompatActivity{
                 break;
         }
     }
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            // go back to main.
+            Intent backIntent = new Intent(this, CameraActivity.class);
+            startActivity(backIntent);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
 
 
 

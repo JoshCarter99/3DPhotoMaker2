@@ -455,9 +455,19 @@ public class CameraFragment extends Fragment
         }
     }
 
+    /*public void onRestart() {
+
+        Log.d("")
+
+    }*/
+
     @Override
     public void onResume() {
         super.onResume();
+
+        //getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+
+        Log.d("Resume","resumed");
         startBackgroundThread();
 
         // When the screen is turned off and turned back on, the SurfaceTexture is already
@@ -479,6 +489,7 @@ public class CameraFragment extends Fragment
         closeCamera();
         stopBackgroundThread();
         super.onPause();
+        //getFragmentManager().beginTransaction().detach(this).attach(this).commit();
         Log.d("Pause","1");
     }
 
@@ -489,6 +500,7 @@ public class CameraFragment extends Fragment
         PIC_COUNTER=0;
         PIC_COUNTER_INITITAL=0;
         photoButton.setBackgroundResource(R.drawable.camera_button);
+        //getFragmentManager().beginTransaction().detach(this).attach(this).commit();
     }
 
     public void onDestroy(){

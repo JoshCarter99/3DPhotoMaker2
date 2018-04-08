@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -38,6 +39,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.IntentCompat;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
@@ -81,11 +83,12 @@ public class CameraFragment extends Fragment
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
     private static final int REQUEST_CAMERA_PERMISSION = 1;
     private static final String FRAGMENT_DIALOG = "dialog";
-    private int PIC_COUNTER = 0;
+    public static int PIC_COUNTER = 0;
+    //private int PIC_COUNTER = 0;
     private int PIC_COUNTER_INITITAL = 0;
     private int Auto_flash_counter=0;
     private int FLASH_COUNTER;
-    private int SQUARE_COUNTER;
+    private int SQUARE_COUNTER=1;
 
     public ImageButton photoButton;
     public ImageButton FlashButton, SquareButton;
@@ -212,7 +215,13 @@ public class CameraFragment extends Fragment
             Log.d("hello","hello");
             if(PIC_COUNTER==0) {
                 // Saving image to mFileL?
-                mBackgroundHandler.post(new ImageSaver(reader.acquireNextImage(), mFileL));
+                try {
+                    mBackgroundHandler.post(new ImageSaver(reader.acquireNextImage(), mFileL));
+                }catch(NullPointerException e){
+                    Log.d("crash","219");
+                    //getFragmentManager().beginTransaction().detach(getParentFragment()).attach(getParentFragment()).commit();
+                    newInstance();
+                }
 
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
@@ -764,18 +773,34 @@ public class CameraFragment extends Fragment
                                         mCaptureCallback, mBackgroundHandler);
                             } catch (CameraAccessException e) {
                                 e.printStackTrace();
+                            } catch (NullPointerException e){
+                                Log.d("crash","774");
+                                newInstance();
+                            } catch (IllegalStateException e){
+                                Log.d("crash","779");
+                                //createCameraPreviewSession();
+                                newInstance();
                             }
                         }
 
                         @Override
                         public void onConfigureFailed(
                                 @NonNull CameraCaptureSession cameraCaptureSession) {
-                            showToast("Failed");
+                            //showToast("Failed");
+                            Log.d("crash","780");
+                            //createCameraPreviewSession();
+                            Intent intent = new Intent(getActivity(),CameraActivity.class);
+                            startActivity(intent);
+                            //CameraActivity.
+                            //newInstance();
+                            //getFragmentManager().beginTransaction().detach(this).attach(getTargetFragment()).commit();
                         }
                     }, null
             );
         } catch (CameraAccessException e) {
             e.printStackTrace();
+        } catch (NullPointerException e){
+            newInstance();
         }
     }
 
@@ -829,6 +854,11 @@ public class CameraFragment extends Fragment
                     mBackgroundHandler);
         } catch (CameraAccessException e) {
             e.printStackTrace();
+        } catch (NullPointerException e){
+            //Works
+            Log.d("crash","839");
+            newInstance();
+            //getFragmentManager().beginTransaction().detach(this).attach(this).commit();
         }
     }
 
@@ -965,7 +995,7 @@ public class CameraFragment extends Fragment
 
                 // If no pic has been captured after first 4 secs, allow another to be taken.
                 if (PIC_COUNTER_INITITAL==0) {
-                    new CountDownTimer(6000, 6000) {
+                    new CountDownTimer(7000, 7000) {
 
                         public void onTick(long millisUntilFinished) {
                         }
@@ -973,7 +1003,7 @@ public class CameraFragment extends Fragment
                         public void onFinish() {
                             if(PIC_COUNTER==0) {
                                 PIC_COUNTER_INITITAL = 0;
-                                Log.d("TIMER","FINSIHED");
+                                Log.d("TIMER","timed out");
                             }else{
                                 Log.d("TIMER","FINSIHED-PicCaptured");
                             }
@@ -1029,12 +1059,12 @@ public class CameraFragment extends Fragment
                 Log.d("squareButton","hello");
                 if(SQUARE_COUNTER==1){
                     SQUARE_COUNTER++;
-                    SquareButton.setBackgroundResource(R.drawable.not_tick_4);
-                    BigSquare.setVisibility(View.INVISIBLE);
-                }else{
-                    SQUARE_COUNTER=1;
                     SquareButton.setBackgroundResource(R.drawable.square_tick_4);
                     BigSquare.setVisibility(View.VISIBLE);
+                }else{
+                    SQUARE_COUNTER=1;
+                    SquareButton.setBackgroundResource(R.drawable.not_tick_4);
+                    BigSquare.setVisibility(View.INVISIBLE);
                 }
                 break;
             }

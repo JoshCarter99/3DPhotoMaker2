@@ -50,7 +50,16 @@ public class CameraActivity extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            // do nothing
+
+            if(CameraFragment.PIC_COUNTER==1){
+                Log.d("Hello","1");
+                recreate();
+            }else {
+                Log.d("Hello","2");
+                //finish();
+                //System.exit(0);
+                //moveTaskToBack(true);
+            }
             return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -76,6 +85,7 @@ public class CameraActivity extends AppCompatActivity {
                     MY_PERMISSIONS_REQUEST_ACCESS_CODE);
         }
     }
+
 
 
 

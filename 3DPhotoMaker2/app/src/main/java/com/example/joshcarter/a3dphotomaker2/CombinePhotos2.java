@@ -625,6 +625,7 @@ public class CombinePhotos2 extends AppCompatActivity{
             SaveButton.setVisibility(View.GONE);
             ManualAlignButton.setVisibility(View.GONE);
             BackButtonMain.setVisibility(View.GONE);
+            InfoButton.setVisibility(View.GONE);
 
             TouchInstructions.setVisibility(View.VISIBLE);
             BackButton.setVisibility(View.VISIBLE);
@@ -735,6 +736,7 @@ public class CombinePhotos2 extends AppCompatActivity{
             AutoAlignButton.setVisibility(View.VISIBLE);
             TouchAlignButton.setVisibility(View.VISIBLE);
             BackButtonMain.setVisibility(View.VISIBLE);
+            InfoButton.setVisibility(View.VISIBLE);
 
             return true;
 

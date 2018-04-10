@@ -1,21 +1,17 @@
 package com.example.joshcarter.a3dphotomaker2;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -45,7 +41,7 @@ import static java.lang.Math.round;
 
 public class CombinePhotos2 extends AppCompatActivity{
 
-    public Bitmap picRC,picLR, alignedPic, combinedPic, manualPic;
+    public Bitmap picLR, alignedPic, combinedPic, manualPic;
     public static Bitmap picL, picR;
     public Uri fileLeft, fileRight;
     public ImageView comPic, InfoLayout;
@@ -64,7 +60,6 @@ public class CombinePhotos2 extends AppCompatActivity{
     String photoKeyLeft = "photoLeft";
     String photoKeyRight = "photoRight";
     String photoKeyAligned = "photoKeyAligned";
-    String photoKeyCombined = "photoKeyCombined";
 
     public int ALIGN_COUNTER=0;
     public int TOUCH_ALIGN_COUNTER=0;
@@ -96,12 +91,10 @@ public class CombinePhotos2 extends AppCompatActivity{
         InfoLayout = findViewById(R.id.infoLayout);
         InfoButton = findViewById(R.id.infoButton);
 
-        /////////
+
         RetainFragment retainFragment =
                 RetainFragment.findOrCreateRetainFragment(getFragmentManager());
         mMemoryCache = retainFragment.mRetainedCache;
-
-        Log.d("Hello","bonjour");
 
         if (mMemoryCache != null) {
             if(savedInstanceState!=null){
@@ -122,14 +115,9 @@ public class CombinePhotos2 extends AppCompatActivity{
                 picLR = mMemoryCache.get(photoKey);
             }
 
-            //TouchAlignButton.setVisibility(View.GONE);
-
-            //picLR = BitmapWorker.getAnswerFromMemoryCache(photoKey);
             comPic.setImageBitmap(picLR);
             picLR = null;
         } else{
-
-            //initialCurrentOrientation = this.getResources().getConfiguration().orientation;
 
             final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
 
@@ -146,25 +134,18 @@ public class CombinePhotos2 extends AppCompatActivity{
 
             retainFragment.mRetainedCache = mMemoryCache;
 
-            BitmapWorker = (BitmapWorkerTask) new BitmapWorkerTask().execute(10l);
+            BitmapWorker = (BitmapWorkerTask) new BitmapWorkerTask().execute(2L);
 
             BitmapWorker.addMMemoryCache(mMemoryCache);
 
-            ////
+
 
             if(getIntent().getIntExtra("shiftHor",1)!=1){
 
                 combinedPic=null;
 
-
-
-                //ManualAlignButton.setBackgroundResource(R.drawable.touch_aligned_5);
-
-
                 CURRENT_PIC=3;
 
-                //OrientationOnRightPic = getIntent().getIntExtra("Orientation",0);
-                Log.d("OrientationOnRightPic",Integer.toString(OrientationOnRightPic));
                 if (OrientationOnRightPic == Configuration.ORIENTATION_LANDSCAPE) {
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
                 }
@@ -195,8 +176,6 @@ public class CombinePhotos2 extends AppCompatActivity{
                 fileRight = intent.getParcelableExtra(photoKeyRight);
                 OrientationOnRightPic = intent.getIntExtra("Orientation",0);
 
-                Log.d("OrientationOfRightPic", Integer.toString(OrientationOnRightPic));
-
                 if (OrientationOnRightPic == Configuration.ORIENTATION_LANDSCAPE) {
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
                 }
@@ -212,17 +191,9 @@ public class CombinePhotos2 extends AppCompatActivity{
                     e.printStackTrace();
                 }
 
-                /*picL = BitmapFactory.decodeResource(this.getResources(),
-                        R.drawable.dog);
-                picR = BitmapFactory.decodeResource(this.getResources(),
-                        R.drawable.dog);*/
-
 
                 picHeight = picL.getHeight();
                 picWidth = picL.getWidth();
-
-                Log.d("picHeight",Double.toString(picHeight));
-                Log.d("picWidth",Double.toString(picWidth));
 
                 /// maybe move this above rotation???
                 if(picHeight>1920||picWidth>1920){
@@ -239,69 +210,18 @@ public class CombinePhotos2 extends AppCompatActivity{
                     picR = Bitmap.createScaledBitmap(picR,newPicWidth, newPicHeight, true);
                 }
 
-                //comPic.setImageBitmap(picL);
-
-                Log.d("picHeightAfterStrech",Integer.toString(picL.getHeight()));
-                Log.d("picWidthAfterStrech",Integer.toString(picL.getWidth()));
-
 
                 DisplayMetrics displayMetrics = new DisplayMetrics();
                 getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
                 double height = displayMetrics.heightPixels;
                 double width = displayMetrics.widthPixels;
 
-                Log.d("Height",Double.toString(height));
-                Log.d("Width",Double.toString(width));
 
                 if((picL.getHeight()*width!=picL.getWidth()*height)||(picL.getHeight()*height!=picL.getWidth()*width)){
-                    Log.d("Helllooooo","wow");
-
-                    /*if(picL.getHeight()>picL.getWidth()){
-                        if(height>width){
-                            double ratio = width/height;
-                            int newWidth = (int) round(picL.getHeight()*ratio);
-                            Log.d("ratio1", Double.toString(ratio));
-                            Log.d("WIDTH0", Integer.toString(picL.getWidth()));
-                            Log.d("HEIGHT0", Integer.toString(newWidth));
-                            //int startPoint = (int) round(((double)(picL.getHeight()-newHeight))/2);
-                            picL=Bitmap.createBitmap(picL, 0,0,newWidth, picL.getHeight());
-                            picR=Bitmap.createBitmap(picR, 0,0,newWidth, picR.getHeight());
-                        }else{
-                            double ratio = height/width;
-                            int newWidth = (int) round(picL.getHeight()*ratio);
-                            Log.d("ratio1", Double.toString(ratio));
-                            Log.d("WIDTH1", Integer.toString(picL.getWidth()));
-                            Log.d("HEIGHT1", Integer.toString(newWidth));
-                            //int startPoint = (int) round(((double)(picL.getHeight()-newHeight))/2);
-                            picL=Bitmap.createBitmap(picL, 0,picL.getWidth()-newWidth, picL.getHeight(),newWidth);
-                            picR=Bitmap.createBitmap(picR, 0,picL.getWidth()-newWidth, picL.getHeight(),newWidth);
-                        }
-                    }else {
-                        if(height>width) {
-                            double ratio = width / height;
-                            int newHeight = (int) round(picL.getWidth() * ratio);
-                            Log.d("ratio2", Double.toString(ratio));
-                            Log.d("WIDTH2", Integer.toString(picL.getWidth()));
-                            Log.d("HEIGHT2", Integer.toString(newHeight));
-                            //picL = Bitmap.createBitmap(picL, 0, picL.getHeight() - newHeight, picL.getWidth(), newHeight);
-                            //picR = Bitmap.createBitmap(picR, 0, picR.getHeight() - newHeight, picR.getWidth(), newHeight);
-                        }else{
-
-                            double ratio = height/width;
-                            int newHeight = (int) round(picL.getWidth()*ratio);
-                            Log.d("ratio3", Double.toString(ratio));
-                            Log.d("WIDTH3", Integer.toString(picL.getWidth()));
-                            Log.d("HEIGHT3", Integer.toString(newHeight));
-                            int startPoint = (int) round(((double)(picL.getHeight()-newHeight))/2);
-                            picL=Bitmap.createBitmap(picL, 0,startPoint,picL.getWidth(), newHeight);
-                            picR=Bitmap.createBitmap(picR, 0,startPoint,picR.getWidth(), newHeight);
-                        }
-                    }*/
 
                     if(picL.getHeight()>picL.getWidth()){
                         if(height>width){
                             if(picL.getHeight()*width>picL.getWidth()*height){
-                                Log.d("WIDTH3", Integer.toString(1));
                                 double ratio = height/width;
                                 int newHeight = (int) round(picL.getWidth()*ratio);
                                 picL=Bitmap.createBitmap(picL, 0,0,picL.getWidth(), newHeight);
@@ -309,7 +229,6 @@ public class CombinePhotos2 extends AppCompatActivity{
 
                             }else{
                                 // WORKS
-                                Log.d("WIDTH3", Integer.toString(2));
                                 double ratio = width/height;
                                 int newWidth = (int) round(picL.getHeight()*ratio);
                                 picL=Bitmap.createBitmap(picL, 0,0,newWidth, picL.getHeight());
@@ -317,14 +236,12 @@ public class CombinePhotos2 extends AppCompatActivity{
                             }
                         }else{
                             if(picL.getHeight()*height>picL.getWidth()*width){
-                                Log.d("WIDTH3", Integer.toString(3));
                                 double ratio = width/height;
                                 int newHeight = (int) round(picL.getWidth()*ratio);
                                 picL=Bitmap.createBitmap(picL, 0,0,picL.getWidth(), newHeight);
                                 picR=Bitmap.createBitmap(picR, 0,0,picR.getWidth(), newHeight);
 
                             }else{
-                                Log.d("WIDTH3", Integer.toString(4));
                                 double ratio = height/width;
                                 int newWidth = (int) round(picL.getHeight()*ratio);
                                 picL=Bitmap.createBitmap(picL, 0,0,newWidth, picL.getHeight());
@@ -335,8 +252,6 @@ public class CombinePhotos2 extends AppCompatActivity{
                         if(height>width) {
                             if(picL.getWidth()*width>picL.getHeight()*height){
                                 // WORKS - maybe
-                                Log.d("WIDTH3", Integer.toString(5));
-
                                 double ratio = height/width;
                                 int newWidth = (int) round(picL.getHeight() * ratio);
                                 int startPoint = (int) round(((double)(picL.getWidth()-newWidth))/2);
@@ -346,17 +261,14 @@ public class CombinePhotos2 extends AppCompatActivity{
 
                             }else{
                                 // WORKS
-                                Log.d("WIDTH3", Integer.toString(6));
                                 double ratio = width/height;
-                                int newWidth = (int) round(picL.getWidth() * ratio);
-                                picL = Bitmap.createBitmap(picL, 0, picL.getHeight() - newWidth, picL.getWidth(), newWidth);
-                                picR = Bitmap.createBitmap(picR, 0, picR.getHeight() - newWidth, picR.getWidth(), newWidth);
+                                int newHeight = (int) round(picL.getWidth() * ratio);
+                                picL = Bitmap.createBitmap(picL, 0, picL.getHeight() - newHeight, picL.getWidth(), newHeight);
+                                picR = Bitmap.createBitmap(picR, 0, picR.getHeight() - newHeight, picR.getWidth(), newHeight);
                             }
                         }else{
                             if(picL.getWidth()*height>picL.getHeight()*width){
                                 // WORKS - maybe
-                                Log.d("WIDTH3", Integer.toString(7));
-
                                 double ratio = width/height;
                                 int newWidth = (int) round(picL.getHeight() * ratio);
                                 picL = Bitmap.createBitmap(picL, picL.getWidth()-newWidth, 0, newWidth, picL.getHeight());
@@ -365,13 +277,11 @@ public class CombinePhotos2 extends AppCompatActivity{
 
                             }else{
                                 // WORKS
-                                Log.d("WIDTH3", Integer.toString(8));
                                 double ratio = height/width;
-                                int newWidth = (int) round(picL.getWidth() * ratio);
-                                int startPoint = (int) round(((double)(picL.getHeight()-newWidth))/2);
-                                picL = Bitmap.createBitmap(picL, 0, startPoint, picL.getWidth(), newWidth);
-                                picR = Bitmap.createBitmap(picR, 0, startPoint, picR.getWidth(), newWidth);
-                                //picR = Bitmap.createBitmap(picR, 0, picR.getHeight() - newWidth, picR.getWidth(), newWidth);
+                                int newHeight = (int) round(picL.getWidth() * ratio);
+                                int startPoint = (int) round(((double)(picL.getHeight()-newHeight))/2);
+                                picL = Bitmap.createBitmap(picL, 0, startPoint, picL.getWidth(), newHeight);
+                                picR = Bitmap.createBitmap(picR, 0, startPoint, picR.getWidth(), newHeight);
                             }
                         }
                     }
@@ -382,9 +292,7 @@ public class CombinePhotos2 extends AppCompatActivity{
                 try {
                     ExifInterface exif = new ExifInterface(fileLeft.getPath());
                     orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
-                    Log.d("EXIF", "Exif: " + orientation);
                     Matrix matrix = new Matrix();
-                    Log.d("orientation111", Integer.toString(orientation));
                     if (orientation == 6) {
                         matrix.postRotate(90);
                     } else if (orientation == 3) {
@@ -395,36 +303,18 @@ public class CombinePhotos2 extends AppCompatActivity{
                     picL = Bitmap.createBitmap(picL, 0, 0, picL.getWidth(), picL.getHeight(), matrix, true); // rotating bitmap
                     picR = Bitmap.createBitmap(picR, 0, 0, picR.getWidth(), picR.getHeight(), matrix, true); // rotating bitmap
                 } catch (Exception e) {
+                    // This may be a bad idea.
+                    recreate();
                 }
 
                 picLR = AutoAlign2.combinePhotos(picL, picR,0,0);
-
-                Log.d("timeStarts","timer3");
 
                 comPic.setImageBitmap(picLR);
 
                 CURRENT_PIC=0;
 
-
-                /*if ((orientation==6 && currentOrientation2 ==1) || (orientation == 1 && currentOrientation2 == 2)){
-                comPic.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                } else {
-                comPic.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                }*/
-
-                //int currentOrientation = getResources().getConfiguration().orientation;
-                /*Log.d(Integer.toString(orientation),Integer.toString(Configuration.ORIENTATION_LANDSCAPE));
-                Log.d(Integer.toString(orientation),Integer.toString(Configuration.ORIENTATION_PORTRAIT));
-                if (orientation == 1) {
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-                } else {
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
-                }*/
-
                 BitmapWorker.addAnswerToMemoryCache(photoKey,picLR);
                 picLR = null;
-                //new File(fileLeft.getPath()).delete();
-                //new File(fileRight.getPath()).delete();
             }
 
         }
@@ -446,8 +336,6 @@ public class CombinePhotos2 extends AppCompatActivity{
 
     public void backButton(View view){
 
-        Log.d("current pic",Integer.toString(CURRENT_PIC));
-
         AutoAlignButton.setVisibility(View.VISIBLE);
         TouchAlignButton.setVisibility(View.VISIBLE);
         SaveButton.setVisibility(View.VISIBLE);
@@ -460,19 +348,15 @@ public class CombinePhotos2 extends AppCompatActivity{
 
         switch (CURRENT_PIC){
             case 3:
-                Log.d("Hello",Integer.toString(3));
                 comPic.setImageBitmap(manualPic);
                 break;
             case 2:
-                Log.d("Hello",Integer.toString(2));
                 comPic.setImageBitmap(combinedPic);
                 break;
             case 1:
-                Log.d("Hello",Integer.toString(1));
                 comPic.setImageBitmap(mMemoryCache.get(photoKeyAligned));
                 break;
             default:
-                Log.d("Hello",Integer.toString(0));
                 comPic.setImageBitmap(mMemoryCache.get(photoKey));
                 break;
         }
@@ -497,26 +381,15 @@ public class CombinePhotos2 extends AppCompatActivity{
                 break;
         }
 
-        /*
-        if(ALIGN_COUNTER==1){
-            picLR = mMemoryCache.get(photoKeyAligned);
-        }else if(TOUCH_ALIGN_COUNTER==1){
-            picLR = combinedPic;
-        }else if(MANUAL_ALIGN_COUNTER==1){
-            picLR = manualPic;
-        }else{
-            picLR = mMemoryCache.get(photoKey);
-        }*/
-
         try {
             file = getOutputMediaFile();
-            OutputStream fOut = null;
+            OutputStream fOut;
+            assert file != null;
             fOut = new FileOutputStream(file);
             picLR.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
             fOut.flush();
             fOut.close();
             showToast("Saved!");
-            //sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"+ Environment.getExternalStorageDirectory())));
             sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
 
         } catch (Exception e) {
@@ -525,6 +398,7 @@ public class CombinePhotos2 extends AppCompatActivity{
         }
         picLR = null;
     }
+
 
     public void infoButton(View view){
 
@@ -560,7 +434,6 @@ public class CombinePhotos2 extends AppCompatActivity{
         if(MANUAL_ALIGN_COUNTER!=0){
             shiftHor=1;
             shiftVer=1;
-            //ManualAlignButton.setBackgroundResource(R.drawable.save_4);
             MANUAL_ALIGN_COUNTER=0;
         }
 
@@ -581,7 +454,6 @@ public class CombinePhotos2 extends AppCompatActivity{
                     alignedPic = null;
                     ALIGN_COUNTER++;
                     CURRENT_PIC=1;
-                    Log.d("current pic 2", Integer.toString(CURRENT_PIC));
                     AutoAlignButton.setBackgroundResource(R.drawable.aligned_4);
                 }else{
                     showToast("Alignment Failed");
@@ -607,11 +479,7 @@ public class CombinePhotos2 extends AppCompatActivity{
 
     public void touchAlign(View view){
 
-
-
         if(MANUAL_ALIGN_COUNTER!=0){
-            //
-            //ManualAlignButton.setBackgroundResource(R.drawable.save_4);
             shiftHor=1;
             shiftVer=1;
             MANUAL_ALIGN_COUNTER=0;
@@ -628,14 +496,10 @@ public class CombinePhotos2 extends AppCompatActivity{
             TouchInstructions.setVisibility(View.VISIBLE);
             BackButton.setVisibility(View.VISIBLE);
 
-
-
-            //set compic to picR?
             comPic.setImageBitmap(picR);
 
             comPic.setOnTouchListener(handleTouch);
 
-            //TOUCH_ALIGN_COUNTER++;
         }else{
             combinedPic=null;
 
@@ -694,13 +558,10 @@ public class CombinePhotos2 extends AppCompatActivity{
 
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    Log.i("TAG", "touched down");
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    Log.i("TAG", "moving: (" + xCentre + ", " + yCentre + ")");
                     break;
                 case MotionEvent.ACTION_UP:
-                    Log.i("TAG", "touched up");
                     break;
             }
 
@@ -721,10 +582,7 @@ public class CombinePhotos2 extends AppCompatActivity{
                 showToast("Alignment Failed");
                 TOUCH_ALIGN_COUNTER=0;
                 ManualAlignDialog();
-                //comPic.setImageBitmap(mMemoryCache.get(photoKey));
             }
-
-            Log.d("hello","hello");
 
             TouchInstructions.setVisibility(View.GONE);
             BackButton.setVisibility(View.GONE);
@@ -772,15 +630,13 @@ public class CombinePhotos2 extends AppCompatActivity{
         }
     };
 
-    private Dialog ManualAlignDialog(){
+    private void ManualAlignDialog(){
         Log.d("hello","hello");
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.alignment_failed_message)
                 .setMessage(R.string.manual_align_message)
                 .setPositiveButton(R.string.manual_align_yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        //TOUCH_ALIGN_COUNTER=0;
-                        //ALIGN_COUNTER=0;
                         ManualAlign();
                     }
                 })
@@ -788,41 +644,30 @@ public class CombinePhotos2 extends AppCompatActivity{
                     public void onClick(DialogInterface dialog, int id) {
                         switch (CURRENT_PIC){
                             case 3:
-                                Log.d("Hello",Integer.toString(3));
                                 comPic.setImageBitmap(manualPic);
                                 break;
                             case 2:
-                                Log.d("Hello",Integer.toString(2));
                                 comPic.setImageBitmap(combinedPic);
                                 break;
                             case 1:
-                                Log.d("Hello",Integer.toString(1));
                                 comPic.setImageBitmap(mMemoryCache.get(photoKeyAligned));
                                 break;
                             default:
-                                Log.d("Hello",Integer.toString(0));
                                 comPic.setImageBitmap(mMemoryCache.get(photoKey));
                                 break;
                         }
                     }
                 })
                 .show();
-        return builder.create();
     }
 
     private void ManualAlign(){
-        //MANUAL_ALIGN_COUNTER=1;
-        //combinedPic=null;
         Intent manualAlignIntent = new Intent(this, ManualAlign.class);
-        //manualAlignIntent.putExtra(photoKeyLeft, fileLeft);
-        //manualAlignIntent.putExtra(photoKeyRight,fileRight);
-        //manualAlignIntent.putExtra("Orientation",OrientationOnRightPic);
         if (CURRENT_PIC==3){
             manualAlignIntent.putExtra("shiftHor",shiftHor);
             manualAlignIntent.putExtra("shiftVer",shiftVer);
         }
         startActivity(manualAlignIntent);
-        //comPic.setImageBitmap(mMemoryCache.get(photoKey));
     }
 
     public void manualAlignButton(View view){
@@ -832,13 +677,11 @@ public class CombinePhotos2 extends AppCompatActivity{
     @Override
     public void onPause() {
         super.onPause();
-        Log.d("Pause","1");
     }
 
     @Override
     public void onStop(){
         super.onStop();
-        Log.d("Stop","1");
 
         switch (CURRENT_PIC){
             case 3:

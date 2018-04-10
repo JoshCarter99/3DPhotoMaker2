@@ -80,6 +80,18 @@ public class CombinePhotos2 extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_combine);
 
+        // Locking orientation
+        /*int currentOrientation = getResources().getConfiguration().orientation;
+        if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+        }
+        else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+        }*/
+        //
+
+        //currentOrientation = this.getResources().getConfiguration().orientation;
+
         comPic = findViewById(R.id.anaglyph);
         AutoAlignButton = findViewById(R.id.autoAlignButton);
         TouchAlignButton = findViewById(R.id.touchAlignButton);

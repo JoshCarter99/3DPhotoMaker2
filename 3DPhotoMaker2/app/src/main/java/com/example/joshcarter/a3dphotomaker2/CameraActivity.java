@@ -8,9 +8,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
-import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +39,6 @@ public class CameraActivity extends AppCompatActivity {
 
     protected void onRestart(){
         super.onRestart();
-        //getFragmentManager().beginTransaction().detach(this).attach(this).commit();
-        Log.d("restart","Recreating");
         recreate();
     }
 
@@ -52,13 +48,8 @@ public class CameraActivity extends AppCompatActivity {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
 
             if(CameraFragment.PIC_COUNTER==1){
-                Log.d("Hello","1");
                 recreate();
             }else {
-                Log.d("Hello","2");
-                //finish();
-                //System.exit(0);
-                //moveTaskToBack(true);
             }
             return true;
         }
@@ -68,7 +59,6 @@ public class CameraActivity extends AppCompatActivity {
 
     @TargetApi(Build.VERSION_CODES.M)
     private void checkPermissions() {
-        Log.d("Check","HelloWOW2");
         final String[] requiredPermissions = {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.CAMERA,
@@ -85,9 +75,6 @@ public class CameraActivity extends AppCompatActivity {
                     MY_PERMISSIONS_REQUEST_ACCESS_CODE);
         }
     }
-
-
-
 
 
 }

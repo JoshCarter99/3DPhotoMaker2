@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.media.MediaPlayer;
@@ -215,12 +216,18 @@ public class CombinePhotos2 extends AppCompatActivity{
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
                 }
 
+
                 try {
                     picL = MediaStore.Images.Media.getBitmap(this.getContentResolver(), fileLeft);
                     picR = MediaStore.Images.Media.getBitmap(this.getContentResolver(), fileRight);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
+                /*picL = BitmapFactory.decodeResource(this.getResources(),
+                        R.drawable.dog);
+                picR = BitmapFactory.decodeResource(this.getResources(),
+                        R.drawable.dog);*/
 
 
                 picHeight = picL.getHeight();
@@ -521,6 +528,9 @@ public class CombinePhotos2 extends AppCompatActivity{
             fOut.flush();
             fOut.close();
             showToast("Saved!");
+            //sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"+ Environment.getExternalStorageDirectory())));
+            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+
         } catch (Exception e) {
             e.printStackTrace();
             showToast("Not Saved");

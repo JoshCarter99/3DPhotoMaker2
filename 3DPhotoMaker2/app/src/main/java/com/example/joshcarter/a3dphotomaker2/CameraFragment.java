@@ -232,7 +232,12 @@ public class CameraFragment extends Fragment
 
             }else if(PIC_COUNTER==1){
                 Log.d("timeStarts","timer1");
-                mBackgroundHandler.post(new ImageSaver(reader.acquireNextImage(), mFileR));
+                try{
+                    mBackgroundHandler.post(new ImageSaver(reader.acquireNextImage(), mFileR));
+                }catch(NullPointerException e){
+                    Log.d("crash","239");
+                    newInstance();
+                }
             }
         }
     };

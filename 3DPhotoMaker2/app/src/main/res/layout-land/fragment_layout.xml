@@ -22,7 +22,6 @@
         android:layout_gravity="center"
         android:background="@drawable/camera_button"
         android:scaleType="centerCrop" />
-    <!--android:text="@string/left_pic" -->
 
 
     <ImageButton
@@ -38,7 +37,6 @@
         android:contentDescription="@string/description_info"
         android:padding="20dp" />
 
-    <!--</FrameLayout>-->
 
     <ImageButton
         android:id="@+id/flashButton"
@@ -71,103 +69,6 @@
         android:layout_centerVertical="true"
         android:visibility="invisible"
         app:srcCompat="@drawable/big_square_4" />
-    <!--<FrameLayout
-        android:id="@+id/control"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@id/texture"
-        android:background="@color/control_background"
-        android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/picture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/picture" />
-
-        <ImageButton
-            android:id="@+id/info"
-            style="@android:style/Widget.Material.Light.Button.Borderless"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|bottom"
-            android:contentDescription="@string/description_info"
-            android:padding="20dp"
-            android:src="@drawable/ic_action_info" /> -->
-
-<!--
-    <FrameLayout
-        android:id="@+id/control"
-        android:layout_width="112dp"
-        android:layout_height="match_parent"
-        android:layout_alignParentEnd="true"
-        android:background="@color/control_background">
-
-        <Button
-            android:id="@+id/photo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/left_pic" />
-
-        <ImageButton
-            android:id="@+id/info"
-            style="@android:style/Widget.Material.Light.Button.Borderless"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|bottom"
-            android:contentDescription="@string/description_info"
-            android:padding="20dp"
-            android:src="@drawable/ic_action_info" />
-
-    </FrameLayout>
-
-    <ImageButton
-        android:id="@+id/flashButton"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/not_flash"
-        android:contentDescription="@string/flash"
-        android:scaleType="fitCenter" />
-
-    <ImageButton
-        android:id="@+id/squareButton"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="95dp"
-        android:background="@drawable/square"
-        android:contentDescription="@string/square"
-        android:scaleType="fitCenter" />
-
-    <ImageView
-        android:id="@+id/bigSquare"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:visibility="invisible"
-        app:srcCompat="@drawable/big_square" />
-
-    <Button
-        android:id="@+id/restart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="41dp"
-        android:layout_marginTop="57dp"
-        android:text="@string/restart"
-        android:onClick="RestartButton"/>  -->
 
 </RelativeLayout>

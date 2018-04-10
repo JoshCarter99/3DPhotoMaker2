@@ -28,8 +28,6 @@ import static java.lang.Math.round;
 public class ManualAlign extends AppCompatActivity{
 
     public Bitmap picLC, picRC;
-    String photoKeyLeft = "photoLeft";
-    String photoKeyRight = "photoRight";
     static int orientation;
 
     public int shiftHor = 0;
@@ -47,7 +45,6 @@ public class ManualAlign extends AppCompatActivity{
         comPicLeft = findViewById(R.id.anaglyphLeft);
         comPicRight = findViewById(R.id.anaglyphRight);
 
-        //comPicRight.setImageBitmap(CombinePhotos2.picR);
 
         picLC = CombinePhotos2.picL.copy(CombinePhotos2.picL.getConfig(),true);
         picRC = CombinePhotos2.picR.copy(CombinePhotos2.picR.getConfig(),true);
@@ -70,13 +67,7 @@ public class ManualAlign extends AppCompatActivity{
         comPicLeft.setImageBitmap(picLC);
         comPicLeft.setImageAlpha(190);
 
-        /*comPicLeft.setLayoutParams(comPicLeft.getHeight(),comPicLeft.getWidth());
-        comPicLeft.getHeight();
-        comPicLeft.getWidth();*/
-
         params = comPicLeft.getLayoutParams();
-        Log.d("height",Integer.toString(params.height));
-        Log.d("width",Integer.toString(params.width));
         params.height = comPicLeft.getHeight();
         params.width = comPicLeft.getWidth();
         comPicLeft.setLayoutParams(params);
@@ -87,12 +78,6 @@ public class ManualAlign extends AppCompatActivity{
             comPicLeft.setX(comPicLeft.getX()-shiftHor);
             comPicLeft.setY(comPicLeft.getY()-shiftVer);
         }
-
-        /*if (CombinePhotos2.orientation == 1) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-        } else {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
-        }*/
     }
 
     public void leftButton(View view){
@@ -139,12 +124,6 @@ public class ManualAlign extends AppCompatActivity{
         Intent manualAlignBackIntent = new Intent(this, CombinePhotos2.class);
         manualAlignBackIntent.putExtra("shiftHor",shiftHor);
         manualAlignBackIntent.putExtra("shiftVer",shiftVer);
-        //manualAlignBackIntent.putExtra("Orientation",CombinePhotos2.orientation);
         startActivity(manualAlignBackIntent);
     }
-
-    /*public void backButton(View view){
-        Intent backIntent = new Intent(this, CombinePhotos2.class);
-        startActivity(backIntent);
-    }*/
 }

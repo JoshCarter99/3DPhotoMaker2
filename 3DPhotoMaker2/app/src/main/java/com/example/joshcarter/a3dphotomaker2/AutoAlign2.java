@@ -1,9 +1,5 @@
 package com.example.joshcarter.a3dphotomaker2;
 
-/**
- * Created by JoshCarter on 14/03/2018.
- */
-
 import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -33,9 +29,6 @@ abstract public class AutoAlign2 extends AppCompatActivity{
 
         int startVer = (int) ((double) (height - alignSquareSize) / 2) + y;
         int startHor = (int) ((double) (width - alignSquareSize) / 2) + x;
-
-        //int startVer = (int)((double)(height-alignSquareSize)/2);
-        //int startHor = (int)((double)(width-alignSquareSize)/2);
 
         int[][] horComponentsL = new int[3][alignSquareSize];
         int[][] horComponentsR = new int[3][alignSquareSize];
@@ -71,7 +64,6 @@ abstract public class AutoAlign2 extends AppCompatActivity{
 
         for (int i = -alignSquareSize + 1 + PixelBuffer; i < alignSquareSize - 1 - PixelBuffer; i++) {
 
-            //Log.d("horComSiz",Integer.toString(horComponentsL[2].length));
             int[][] horComponentsLReduced = new int[3][alignSquareSize - abs(i)];
             int[][] horComponentsRReduced = new int[3][alignSquareSize - abs(i)];
             int[][] verComponentsLReduced = new int[3][alignSquareSize - abs(i)];
@@ -79,12 +71,6 @@ abstract public class AutoAlign2 extends AppCompatActivity{
 
             if (i < 0) {
                 for (int j = 0; j < 3; j++) {
-                    //Log.d("horComRedSize",Integer.toString(horComponentsLReduced[j].length));
-                    //Log.d("horComRedSize2",Integer.toString(Arrays.copyOfRange(horComponentsL[j], 0, i + alignSquareSize).length));
-                    //Log.d("test1",Integer.toString(i + alignSquareSize));
-                    //Log.d("test2",Integer.toString(-i));
-                    //Log.d("test2",Integer.toString(alignSquareSize));
-                    //Log.d("horComRedSize3",Integer.toString(Arrays.copyOfRange(horComponentsR[j], -i, alignSquareSize).length));
                     horComponentsLReduced[j] = Arrays.copyOfRange(horComponentsL[j], 0, i + alignSquareSize);
                     horComponentsRReduced[j] = Arrays.copyOfRange(horComponentsR[j], -i, alignSquareSize);
                     verComponentsLReduced[j] = Arrays.copyOfRange(verComponentsL[j], 0, i + alignSquareSize);
@@ -112,8 +98,6 @@ abstract public class AutoAlign2 extends AppCompatActivity{
             double[] RmeanVer = new double[3];
 
             for (int j = 0; j < 3; j++) {
-                //Log.d("horComLength",Integer.toString(horComponentsLReduced[j].length));
-                //Log.d("horCom",horComponentsLReduced[j].toString());
                 Lmean[j] = sum(horComponentsLReduced[j]) / horComponentsLReduced[j].length;
                 Rmean[j] = sum(horComponentsRReduced[j]) / horComponentsRReduced[j].length;
                 LmeanVer[j] = sum(verComponentsLReduced[j]) / verComponentsLReduced[j].length;
@@ -147,18 +131,10 @@ abstract public class AutoAlign2 extends AppCompatActivity{
             }
 
 
-            Log.d(Integer.toString(i), Double.toString(corr[i + alignSquareSize - 1]));
-            Log.d(Integer.toString(i) + "ver", Double.toString(corrVer[i + alignSquareSize - 1]));
-
-
         }
 
         int maxCorr = maxIndex(corr) - alignSquareSize + 1;
         int maxCorrVer = maxIndex(corrVer) - alignSquareSize + 1;
-        Log.d("maxCorr", Integer.toString(maxCorr));
-        Log.d("maxCorr", Double.toString(corr[maxCorr + alignSquareSize - 1]));
-        Log.d("maxCorrVer", Integer.toString(maxCorrVer));
-        Log.d("maxCorrVer", Double.toString(corrVer[maxCorrVer + alignSquareSize - 1]));
 
         if (corr[maxCorr + alignSquareSize - 1] < 1.3 || corrVer[maxCorrVer + alignSquareSize - 1] < 1.3) {
             return null;
@@ -168,7 +144,6 @@ abstract public class AutoAlign2 extends AppCompatActivity{
     }
 
 
-    //////
     public static Bitmap alignAllCols(Bitmap bitmapL, Bitmap bitmapR){
         int height = bitmapL.getHeight();
         int width = bitmapL.getWidth();
@@ -204,18 +179,11 @@ abstract public class AutoAlign2 extends AppCompatActivity{
 
         for (int i=-alignSquareSize+1+PixelBuffer; i<alignSquareSize-1-PixelBuffer; i++){
 
-            //Log.d("horComSiz",Integer.toString(horComponentsL[2].length));
             int[][] horComponentsLReduced = new int[3][alignSquareSize-abs(i)];
             int[][] horComponentsRReduced = new int[3][alignSquareSize-abs(i)];
 
             if (i<0){
                 for (int j=0; j<3; j++) {
-                    //Log.d("horComRedSize",Integer.toString(horComponentsLReduced[j].length));
-                    //Log.d("horComRedSize2",Integer.toString(Arrays.copyOfRange(horComponentsL[j], 0, i + alignSquareSize).length));
-                    //Log.d("test1",Integer.toString(i + alignSquareSize));
-                    //Log.d("test2",Integer.toString(-i));
-                    //Log.d("test2",Integer.toString(alignSquareSize));
-                    //Log.d("horComRedSize3",Integer.toString(Arrays.copyOfRange(horComponentsR[j], -i, alignSquareSize).length));
                     horComponentsLReduced[j] = Arrays.copyOfRange(horComponentsL[j], 0, i + alignSquareSize);
                     horComponentsRReduced[j] = Arrays.copyOfRange(horComponentsR[j], -i, alignSquareSize);
                 }
@@ -234,8 +202,6 @@ abstract public class AutoAlign2 extends AppCompatActivity{
             double[] Lmean = new double[3];
             double[] Rmean = new double[3];
             for (int j=0; j<3; j++) {
-                //Log.d("horComLength",Integer.toString(horComponentsLReduced[j].length));
-                //Log.d("horCom",horComponentsLReduced[j].toString());
                 Lmean[j] = sum(horComponentsLReduced[j]) / horComponentsLReduced[j].length;
                 Rmean[j] = sum(horComponentsRReduced[j]) / horComponentsRReduced[j].length;
             }
@@ -254,14 +220,9 @@ abstract public class AutoAlign2 extends AppCompatActivity{
                 corr[i+alignSquareSize-1]+=corrPart[j]*corrPart[j];
             }
 
-
-            Log.d(Integer.toString(i),Double.toString(corr[i+alignSquareSize-1]));
-
-
         }
 
         int maxCorr = maxIndex(corr)-alignSquareSize+1;
-        Log.d("maxCorr",Integer.toString(maxCorr));
 
         if (corr[maxCorr + alignSquareSize - 1] < 1.5) {
             return null;
@@ -270,7 +231,6 @@ abstract public class AutoAlign2 extends AppCompatActivity{
         }
 
     }
-    //////
 
 
 
@@ -279,9 +239,7 @@ abstract public class AutoAlign2 extends AppCompatActivity{
 
         int[] pixelColorL= new int[bitmapL.getWidth()-abs(maxCorrVer)];
         int[] pixelColorR= new int[bitmapR.getWidth()-abs(maxCorrVer)];
-        //Bitmap picLC = bitmapL.copy(bitmapL.getConfig(),true);
         Bitmap picRC = bitmapR.copy(bitmapL.getConfig(),true);
-        Log.d("test","4");
 
         if(maxCorr>0) {
             if(maxCorrVer>0){

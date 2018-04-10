@@ -1,4 +1,4 @@
-package com.example.joshcarter.a3dphotomaker2;
+package joshcarter.a3dphotomaker2;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;

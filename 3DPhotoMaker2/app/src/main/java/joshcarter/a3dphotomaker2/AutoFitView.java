@@ -1,4 +1,4 @@
-package com.example.joshcarter.a3dphotomaker2;
+package joshcarter.a3dphotomaker2;
 
 import android.content.Context;
 import android.util.AttributeSet;

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.joshcarter.a3dphotomaker2.ManualAlign">
+    tools:context="joshcarter.a3dphotomaker2.ManualAlign">
 
 
     <ImageView

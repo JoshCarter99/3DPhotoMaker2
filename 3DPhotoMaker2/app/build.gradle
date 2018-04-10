@@ -3,7 +3,7 @@
 android {
     compileSdkVersion 26
     defaultConfig {
-        applicationId "com.example.joshcarter.a3dphotomaker2"
+        applicationId "joshcarter.a3dphotomaker2"
         minSdkVersion 21
         targetSdkVersion 26
         versionCode 1

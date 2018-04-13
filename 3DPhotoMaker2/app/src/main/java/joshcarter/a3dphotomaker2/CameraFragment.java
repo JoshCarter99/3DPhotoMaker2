@@ -94,6 +94,8 @@ public class CameraFragment extends Fragment
     public ImageView BigSquare;
     public int OrientationOnRightPic;
 
+    public boolean mAutoFocusSupported;
+
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
         ORIENTATIONS.append(Surface.ROTATION_90, 0);
@@ -535,6 +537,15 @@ public class CameraFragment extends Fragment
                     continue;
                 }
 
+                int[] afAvailableModes = characteristics.get(CameraCharacteristics.CONTROL_AF_AVAILABLE_MODES);
+
+                if (afAvailableModes.length == 0 || (afAvailableModes.length == 1
+                        && afAvailableModes[0] == CameraMetadata.CONTROL_AF_MODE_OFF)) {
+                    mAutoFocusSupported = false;
+                } else {
+                    mAutoFocusSupported = true;
+                }
+
                 // For still image captures, we use the largest available size.
                 Size largest = Collections.max(
                         Arrays.asList(map.getOutputSizes(ImageFormat.JPEG)),
@@ -793,7 +804,11 @@ public class CameraFragment extends Fragment
 
     //Initiate a still image capture.
     private void takePicture() {
-        lockFocus();
+        if (mAutoFocusSupported) {
+            lockFocus();
+        } else {
+            captureStillPicture();
+        }
     }
 
     //Lock the focus as the first step for a still image capture.

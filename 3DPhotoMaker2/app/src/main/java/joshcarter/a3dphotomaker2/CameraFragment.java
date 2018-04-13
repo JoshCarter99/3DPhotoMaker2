@@ -961,19 +961,11 @@ public class CameraFragment extends Fragment
             case R.id.info: {
                 Activity activity = getActivity();
                 if (null != activity) {
-
-                    //if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                      //  new AlertDialog.Builder(activity)
-                        //        .setPositiveButton(android.R.string.ok, null)
-                          //      .setView(R.layout.info_layout)
-                            //    .show();
-                    //} else {
-                        new AlertDialog.Builder(activity)
-                                .setMessage(R.string.info_message)
-                                .setPositiveButton(android.R.string.ok, null)
-                                .setView(R.layout.info_layout)
-                                .show();
-                    //}
+                    new AlertDialog.Builder(activity)
+                            .setMessage(R.string.info_message)
+                            .setPositiveButton(android.R.string.ok, null)
+                            .setView(R.layout.info_layout)
+                            .show();
                 }
                 break;
             }

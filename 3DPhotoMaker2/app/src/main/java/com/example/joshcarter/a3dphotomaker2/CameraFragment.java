@@ -90,6 +90,8 @@ public class CameraFragment extends Fragment
     private int FLASH_COUNTER;
     private int SQUARE_COUNTER=1;
 
+    public boolean mAutoFocusSupported;
+
     public ImageButton photoButton;
     public ImageButton FlashButton, SquareButton;
     public ImageView BigSquare;
@@ -567,6 +569,15 @@ public class CameraFragment extends Fragment
                     continue;
                 }
 
+                int[] afAvailableModes = characteristics.get(CameraCharacteristics.CONTROL_AF_AVAILABLE_MODES);
+
+                if (afAvailableModes.length == 0 || (afAvailableModes.length == 1
+                        && afAvailableModes[0] == CameraMetadata.CONTROL_AF_MODE_OFF)) {
+                    mAutoFocusSupported = false;
+                } else {
+                    mAutoFocusSupported = true;
+                }
+
                 // For still image captures, we use the largest available size.
                 // Why is maxImages = 2?
                 Size largest = Collections.max(
@@ -844,7 +855,11 @@ public class CameraFragment extends Fragment
     //Initiate a still image capture.
     private void takePicture() {
         Log.d("test","4");
-        lockFocus();
+        if (mAutoFocusSupported) {
+            lockFocus();
+        } else {
+            captureStillPicture();
+        }
     }
 
     //Lock the focus as the first step for a still image capture.
@@ -1087,14 +1102,11 @@ public class CameraFragment extends Fragment
         Log.d("Flash_counter",Integer.toString(FLASH_COUNTER));
         if (mFlashSupported) {
             if (FLASH_COUNTER==1){
-                requestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
-                        CaptureRequest.CONTROL_AE_MODE_OFF);
+                requestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_OFF);
             }else if (FLASH_COUNTER==2) {
-                requestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
-                        CaptureRequest.CONTROL_AE_MODE_ON_ALWAYS_FLASH);
+                requestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_ALWAYS_FLASH);
             }else if(FLASH_COUNTER==3){
-                requestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
-                        CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
+                requestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
             }
         }
     }

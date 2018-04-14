@@ -292,6 +292,7 @@ public class CombinePhotos2 extends AppCompatActivity{
                 try {
                     ExifInterface exif = new ExifInterface(fileLeft.getPath());
                     orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
+                    Log.d("Orientation",Integer.toString(orientation));
                     Matrix matrix = new Matrix();
                     if (orientation == 6) {
                         matrix.postRotate(90);

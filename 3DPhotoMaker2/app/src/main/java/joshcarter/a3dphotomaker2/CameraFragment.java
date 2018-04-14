@@ -85,7 +85,6 @@ public class CameraFragment extends Fragment
     private static final String FRAGMENT_DIALOG = "dialog";
     public static int PIC_COUNTER = 0;
     private int PIC_COUNTER_INITIAL = 0;
-    private int Auto_flash_counter=0;
     private int FLASH_COUNTER;
     private int SQUARE_COUNTER=1;
 
@@ -408,10 +407,8 @@ public class CameraFragment extends Fragment
             FLASH_COUNTER = savedInstanceState.getInt("FlashCounter");
             if(FLASH_COUNTER==1){
                 FlashButton.setBackgroundResource(R.drawable.not_flash_4);
-            }else if(FLASH_COUNTER==2){
-                FlashButton.setBackgroundResource(R.drawable.flash_4);
             }else{
-                FlashButton.setBackgroundResource(R.drawable.auto_flash_4);
+                FlashButton.setBackgroundResource(R.drawable.flash_4);
             }
 
             SQUARE_COUNTER = savedInstanceState.getInt("SquareCounter");
@@ -965,6 +962,8 @@ public class CameraFragment extends Fragment
 
                 if(PIC_COUNTER==1){
                     OrientationOnRightPic=getResources().getConfiguration().orientation;
+                    Log.d("OrientationOnRightPic",Integer.toString(OrientationOnRightPic));
+
                 }
 
                 if (PIC_COUNTER_INITIAL == 1) {
@@ -988,9 +987,6 @@ public class CameraFragment extends Fragment
                 if(FLASH_COUNTER==1){
                     FLASH_COUNTER++;
                     FlashButton.setBackgroundResource(R.drawable.flash_4);
-                }else if(FLASH_COUNTER==2){
-                    FLASH_COUNTER++;
-                    FlashButton.setBackgroundResource(R.drawable.auto_flash_4);
                 }else{
                     FLASH_COUNTER=1;
                     FlashButton.setBackgroundResource(R.drawable.not_flash_4);
@@ -1017,18 +1013,11 @@ public class CameraFragment extends Fragment
 
     private void setAutoFlash(CaptureRequest.Builder requestBuilder) {
 
-        Auto_flash_counter++;
-
         if (mFlashSupported) {
             if (FLASH_COUNTER==1){
-                requestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
-                        CaptureRequest.CONTROL_AE_MODE_OFF);
+                requestBuilder.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_OFF);
             }else if (FLASH_COUNTER==2) {
-                requestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
-                        CaptureRequest.CONTROL_AE_MODE_ON_ALWAYS_FLASH);
-            }else if(FLASH_COUNTER==3){
-                requestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
-                        CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
+                requestBuilder.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_TORCH);
             }
         }
     }

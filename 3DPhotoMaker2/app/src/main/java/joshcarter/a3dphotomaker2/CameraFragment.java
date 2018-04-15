@@ -802,9 +802,11 @@ public class CameraFragment extends Fragment
     //Initiate a still image capture.
     private void takePicture() {
         if (mAutoFocusSupported) {
+            Log.d("mAuto","supported");
             lockFocus();
         } else {
             captureStillPicture();
+            Log.d("mAuto","NotSupported");
         }
     }
 
@@ -972,6 +974,7 @@ public class CameraFragment extends Fragment
 
                 break;
             }
+
             case R.id.info: {
                 Activity activity = getActivity();
                 if (null != activity) {

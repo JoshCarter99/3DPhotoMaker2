@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -33,6 +34,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import static android.os.Build.BRAND;
 import static java.lang.Math.round;
 
 /*
@@ -292,7 +294,6 @@ public class CombinePhotos2 extends AppCompatActivity{
                 try {
                     ExifInterface exif = new ExifInterface(fileLeft.getPath());
                     orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
-                    Log.d("Orientation",Integer.toString(orientation));
                     Matrix matrix = new Matrix();
                     if (orientation == 6) {
                         matrix.postRotate(90);
@@ -300,6 +301,12 @@ public class CombinePhotos2 extends AppCompatActivity{
                         matrix.postRotate(180);
                     } else if (orientation == 8) {
                         matrix.postRotate(270);
+                    }
+
+                    if(BRAND.equals("google")){
+                        if(android.os.Build.VERSION.SDK_INT == Build.VERSION_CODES.N_MR1){
+                            matrix.postRotate(90);
+                        }
                     }
                     picL = Bitmap.createBitmap(picL, 0, 0, picL.getWidth(), picL.getHeight(), matrix, true); // rotating bitmap
                     picR = Bitmap.createBitmap(picR, 0, 0, picR.getWidth(), picR.getHeight(), matrix, true); // rotating bitmap

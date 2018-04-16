@@ -29,6 +29,7 @@ import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
@@ -558,7 +559,6 @@ public class CameraFragment extends Fragment
 
                 //noinspection ConstantConditions
                 mSensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
-
                 // swapped dimensions is true if vertical, false if not.
                 boolean swappedDimensions = false;
                 switch (displayRotation) {
@@ -801,12 +801,14 @@ public class CameraFragment extends Fragment
 
     //Initiate a still image capture.
     private void takePicture() {
-        if (mAutoFocusSupported) {
-            Log.d("mAuto","supported");
-            lockFocus();
-        } else {
+        if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
             captureStillPicture();
-            Log.d("mAuto","NotSupported");
+        }else {
+            if (mAutoFocusSupported) {
+                lockFocus();
+            } else {
+                captureStillPicture();
+            }
         }
     }
 
@@ -964,7 +966,6 @@ public class CameraFragment extends Fragment
 
                 if(PIC_COUNTER==1){
                     OrientationOnRightPic=getResources().getConfiguration().orientation;
-                    Log.d("OrientationOnRightPic",Integer.toString(OrientationOnRightPic));
 
                 }
 
@@ -1022,6 +1023,18 @@ public class CameraFragment extends Fragment
             }else if (FLASH_COUNTER==2) {
                 requestBuilder.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_TORCH);
             }
+
+            /* case FLASH_MODE_ON:
+                requestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON);
+                requestBuilder.set(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_SINGLE);
+                requestBuilder.set(CaptureRequest.CONTROL_AWB_MODE, CaptureRequest.CONTROL_AWB_MODE_FLUORESCENT);
+                break;
+
+            case FLASH_MODE_OFF:
+                requestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CameraMetadata.CONTROL_AE_MODE_ON);
+                requestBuilder.set(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_OFF);
+                requestBuilder.set(CaptureRequest.CONTROL_AWB_MODE, CaptureRequest.CONTROL_AWB_MODE_DAYLIGHT);
+                break;*/
         }
     }
 

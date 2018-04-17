@@ -639,7 +639,6 @@ public class CombinePhotos2 extends AppCompatActivity{
     };
 
     private void ManualAlignDialog(){
-        Log.d("hello","hello");
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.alignment_failed_message)
                 .setMessage(R.string.manual_align_message)

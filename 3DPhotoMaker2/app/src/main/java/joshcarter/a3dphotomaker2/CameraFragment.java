@@ -85,6 +85,7 @@ public class CameraFragment extends Fragment
     private static final int REQUEST_CAMERA_PERMISSION = 1;
     private static final String FRAGMENT_DIALOG = "dialog";
     public static int PIC_COUNTER = 0;
+    public static int PIC_COUNTER_BACKGROUND = 0;
     private int PIC_COUNTER_INITIAL = 0;
     private int FLASH_COUNTER;
     private int SQUARE_COUNTER=1;
@@ -212,10 +213,11 @@ public class CameraFragment extends Fragment
 
             // Jon is awesome
 
-            if(PIC_COUNTER==0) {
+            if(PIC_COUNTER_BACKGROUND==0) {
                 // Saving image to mFileL?
                 try {
                     mBackgroundHandler.post(new ImageSaver(reader.acquireNextImage(), mFileL));
+                    PIC_COUNTER_BACKGROUND++;
                 }catch(NullPointerException e){
                     newInstance();
                 }
@@ -227,9 +229,10 @@ public class CameraFragment extends Fragment
                     }
                 });
 
-            }else if(PIC_COUNTER==1){
+            }else if(PIC_COUNTER_BACKGROUND==1){
                 try{
                     mBackgroundHandler.post(new ImageSaver(reader.acquireNextImage(), mFileR));
+                    SendImages();
                 }catch(NullPointerException e){
                     newInstance();
                 }
@@ -482,7 +485,8 @@ public class CameraFragment extends Fragment
     @Override
     public void onStop(){
         super.onStop();
-        PIC_COUNTER=0;
+        PIC_COUNTER = 0;
+        PIC_COUNTER_BACKGROUND = 0;
         PIC_COUNTER_INITIAL=0;
         photoButton.setBackgroundResource(R.drawable.camera_button);
     }
@@ -883,11 +887,10 @@ public class CameraFragment extends Fragment
 
                     if (PIC_COUNTER == 0) {
                         showToast(getString(R.string.left_toast));
-                        PIC_COUNTER++;
                         PIC_COUNTER_INITIAL=0;
 
                     } else if (PIC_COUNTER==1){
-                        SendImages();
+                        //SendImages();
                         showToast(getString(R.string.right_toast));
                     }else{
                         showToast("Saved!");

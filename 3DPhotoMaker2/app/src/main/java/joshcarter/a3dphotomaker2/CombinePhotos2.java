@@ -727,7 +727,6 @@ public class CombinePhotos2 extends AppCompatActivity{
 
         if (!mediaStorageDir.exists()){
             if (!mediaStorageDir.mkdirs()){
-                Log.d("3DPhotoMaker2", "failed to create directory");
                 return null;
             }
         }

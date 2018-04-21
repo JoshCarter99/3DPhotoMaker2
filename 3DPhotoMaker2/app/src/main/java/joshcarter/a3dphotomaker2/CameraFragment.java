@@ -769,6 +769,8 @@ public class CameraFragment extends Fragment
             e.printStackTrace();
         } catch (NullPointerException e){
             newInstance();
+        } catch (IllegalStateException e){
+            newInstance();
         }
     }
 
@@ -929,17 +931,27 @@ public class CameraFragment extends Fragment
     private void unlockFocus() {
         try {
             // Reset the auto-focus trigger
-            mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,
-                    CameraMetadata.CONTROL_AF_TRIGGER_CANCEL);
-            setAutoFlash(mPreviewRequestBuilder);
-            mCaptureSession.capture(mPreviewRequestBuilder.build(), mCaptureCallback,
-                    mBackgroundHandler);
+
+            // Testing ot see if unlock focus only needs to be called when autoLockFocus is called.
+
+            if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.O) {
+                if (mAutoFocusSupported) {
+                    mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,
+                            CameraMetadata.CONTROL_AF_TRIGGER_CANCEL);
+                    setAutoFlash(mPreviewRequestBuilder);
+                    // This line is trouble for the P8.
+                    mCaptureSession.capture(mPreviewRequestBuilder.build(), mCaptureCallback,
+                            mBackgroundHandler);
+                }
+            }
+
             // After this, the camera will go back to the normal state of preview.
             mState = STATE_PREVIEW;
             mCaptureSession.setRepeatingRequest(mPreviewRequest, mCaptureCallback,
                     mBackgroundHandler);
         } catch (CameraAccessException e) {
             e.printStackTrace();
+        } catch (NullPointerException e){
         }
     }
 

@@ -979,10 +979,7 @@ public class CameraFragment extends Fragment
 
                 PIC_COUNTER_INITIAL++;
 
-                if(PIC_COUNTER==1){
-                    OrientationOnRightPic=getResources().getConfiguration().orientation;
-
-                }
+                OrientationOnRightPic=getResources().getConfiguration().orientation;
 
                 if (PIC_COUNTER_INITIAL == 1) {
                     takePicture();

@@ -27,11 +27,6 @@
         </activity>
 
         <activity
-            android:name=".CombinePhotos"
-            android:parentActivityName=".CameraActivity" >
-        </activity>
-
-        <activity
             android:name=".CombinePhotos2"
             android:parentActivityName=".CameraActivity"
             android:screenOrientation="locked">

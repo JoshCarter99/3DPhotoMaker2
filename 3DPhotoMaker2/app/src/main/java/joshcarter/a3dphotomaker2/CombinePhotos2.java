@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -186,13 +187,15 @@ public class CombinePhotos2 extends AppCompatActivity{
                 }
 
 
-                try {
+                /*try {
                     picL = MediaStore.Images.Media.getBitmap(this.getContentResolver(), fileLeft);
                     picR = MediaStore.Images.Media.getBitmap(this.getContentResolver(), fileRight);
                 } catch (IOException e) {
                     e.printStackTrace();
-                }
+                }*/
 
+                picL = BitmapFactory.decodeResource(getResources(), R.drawable.photo_left2);
+                picR = BitmapFactory.decodeResource(getResources(), R.drawable.photo_right2);
 
                 picHeight = picL.getHeight();
                 picWidth = picL.getWidth();
@@ -291,7 +294,7 @@ public class CombinePhotos2 extends AppCompatActivity{
                 }
 
 
-                try {
+                /*try {
                     ExifInterface exif = new ExifInterface(fileLeft.getPath());
                     orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
                     Matrix matrix = new Matrix();
@@ -313,7 +316,7 @@ public class CombinePhotos2 extends AppCompatActivity{
                 } catch (Exception e) {
                     // This may be a bad idea.
                     recreate();
-                }
+                }*/
 
                 picLR = AutoAlign2.combinePhotos(picL, picR,0,0);
 
